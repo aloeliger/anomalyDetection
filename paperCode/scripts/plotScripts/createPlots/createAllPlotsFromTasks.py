@@ -16,6 +16,7 @@ from anomalyDetection.paperCode.plottingTasks.createCICADATurnOnPlotTask import 
 from anomalyDetection.paperCode.plottingTasks.createCICADAPurityContentPlotTask import createCICADAPurityContentPlotTask
 from anomalyDetection.paperCode.plottingTasks.createObjectCorrelationPlotsTask import createObjectCorrelationPlotsTask
 from anomalyDetection.paperCode.plottingTasks.createObjectControlPlotsTask import createObjectControlPlotsTask
+from anomalyDetection.paperCode.plottingTasks.createCICADAandAXOScatterPlotTask import createCICADAandAXOScatterPlotTask
 
 from anomalyDetection.paperCode.samples.paperSampleBuilder import reducedSamples as samples
 
@@ -68,6 +69,7 @@ def runTask(theTask: createPlotTask):
     #localConsole.log(f"Task: {theTask.taskName} finished")
 
 def main(args):
+    console.log("Setting up tasks...")
     scoreTask = createScorePlotTask(
         taskName="Create Score Plots",
         outputFileName="scorePlots.root",
@@ -119,6 +121,11 @@ def main(args):
         outputFileName = 'CICADAObjectControlPlots.root',
         dictOfSamples = samples,
     )
+    CICADAandAxoScatterTask = createCICADAandAXOScatterPlotTask(
+        taskName = 'CICADA/AXO Scatter Plots',
+        outputFileName = 'CICADAandAXOScatterPlots.root',
+        dictOfSamples = samples,
+    )
 
     allTasks = [
         scoreTask,
@@ -130,6 +137,7 @@ def main(args):
         CICADAPurityContentPlotTask,
         objectCorrelationPlotsTask,
         objectControlPlotsTask,
+        CICADAandAxoScatterTask,
     ]
 
     start_time = perf_counter()
