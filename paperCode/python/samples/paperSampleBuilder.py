@@ -89,7 +89,8 @@ treeNames = [
     'l1UpgradeTree/L1UpgradeTree',
     'L1TTriggerBitsNtuplizer/L1TTriggerBits',
 
-    'CICADAInputNtuplizer/CICADAInputTree',
+    #'CICADAInputNtuplizer/CICADAInputTree',
+    "l1CaloSummaryEmuTree/L1CaloSummaryTree",
 
     'CICADA_v1p2p0_Ntuplizer/CICADA_v1p2p0',
     'CICADA_v2p2p0_Ntuplizer/CICADA_v2p2p0',
