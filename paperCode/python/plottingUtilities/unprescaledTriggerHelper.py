@@ -15,6 +15,13 @@ class unprescaledTriggerHelper():
             self.triggerTables = None
         else:
             self.triggerTables = json.load(theFile)
+        self.technicalTriggerWords = [
+            'First',
+            'Bunch',
+            'Train',
+            'Orbit',
+            'Always'
+        ]
 
     def getListOfTriggers(self, dataframe):
         listOfColumns = dataframe.GetColumnNames()
@@ -28,17 +35,21 @@ class unprescaledTriggerHelper():
         unprescaledTriggers, prescaledTriggers = [], []
 
         for trigger in listOfTriggers:
+            triggerIsTechnical = False
+            for technicalTriggerWord in self.technicalTriggerWords:
+                if technicalTriggerWord in trigger:
+                    triggerIsTechnical = True
+            if triggerIsTechnical:
+                continue
             prescaleColumn = f'{trigger}_prescale'
             counts[trigger] = dataframe.Filter(f'{prescaleColumn} != 1').Count()
             
         for trigger in counts:
             counts[trigger] = counts[trigger].GetValue()
-        for trigger in counts:
             if counts[trigger] == 0:
                 unprescaledTriggers.append(trigger)
             else:
                 prescaledTriggers.append(trigger)
-        
 
         self.triggerTables = {
             'unprescaledTriggers': unprescaledTriggers,
