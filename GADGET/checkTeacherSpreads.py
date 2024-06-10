@@ -33,14 +33,15 @@ def makeDifferences(distribution, outputName):
     
     squaredDifferences = (predictions-outputs)**2
     meanSquaredError = np.mean(squaredDifferences, axis=(1,2))
+    adjustedScore = (1.0-meanSquaredError)*256.0
 
     # print(meanSquaredError)
     # print(meanSquaredError.shape)
     nBins=30
     amounts, binEdges, _ = plt.hist(
-        meanSquaredError,
+        adjustedScore,
         bins=nBins,
-        range=(0.0,1.5)
+        range=(0.0,256.0)
     )
     plt.xlabel("Mean squared error")
     plt.ylabel("Instances")

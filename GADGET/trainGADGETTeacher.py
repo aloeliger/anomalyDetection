@@ -36,8 +36,8 @@ def main():
     trainval_inputData, test_inputData, trainval_outputData,  test_outputData = train_test_split(all_inputData, all_outputData, test_size=0.4, random_state=42)
     inputData, valInput, outputData, valOutput = train_test_split(trainval_inputData, trainval_outputData, test_size=0.1/(0.6), random_state=42)
 
-    print(inputData.shape)
-    print(outputData.shape)
+    console.print(inputData.shape)
+    console.print(outputData.shape)
 
     ae_model = keras.models.Sequential([
         keras.layers.Input(shape=inputData.shape[1:], name="teacher_input"),
@@ -97,7 +97,7 @@ def main():
     
     ae_model.compile(
         loss='mse',
-        metrics = [keras.metrics.MeanAbsoluteError(), keras.metrics.MeanAbsolutePercentageError()],
+        metrics = [keras.metrics.MeanAbsoluteError(), keras.metrics.RootMeanSquaredError()],
         optimizer=keras.optimizers.Adam(learning_rate=0.001)
     )
     teacherBestModel = keras.callbacks.ModelCheckpoint("models/teacher", save_best_only=True)
@@ -110,7 +110,7 @@ def main():
     console.print("Corresponding output")
     console.print(outputData[:1])
 
-    numEpochs = 20
+    numEpochs = 30
     
     ae_model.fit(
         x=inputData,
@@ -119,6 +119,16 @@ def main():
         epochs=numEpochs,
         callbacks=[teacherBestModel, teacherLog]
     )
+
+    numEvents = 10
+    console.rule(f'{numEvents} Test Events')
+    prediction  = ae_model.predict(test_inputData[:numEvents])
+    true = test_outputData[:numEvents]
+    #for i in range(numEvents):
+    #    console.print("True")
+    #    console.print(true[i])
+    #    console.print("Predicted")
+    #    console.print(prediction[i])
 
 if __name__ == '__main__':
     main()
