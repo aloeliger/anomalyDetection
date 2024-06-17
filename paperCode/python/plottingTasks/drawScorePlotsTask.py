@@ -129,3 +129,8 @@ class drawScorePlotsTask(drawPlotTask):
                     self.outputPath / f"{scoreName}_scores.png"
                 )
             )
+            quietROOTFunc(theCanvas.SaveAs)(
+                str(
+                    self.outputPath / f"{scoreName}_scores.pdf"
+                )
+            )

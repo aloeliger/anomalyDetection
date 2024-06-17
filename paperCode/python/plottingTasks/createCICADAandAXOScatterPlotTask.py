@@ -5,7 +5,9 @@ import ROOT
 from pathlib import Path
 from anomalyDetection.paperCode.plottingUtilities.scoreMaxAndMins import scoreMaxAndMinHelper
 from anomalyDetection.paperCode.plottingUtilities.models import standardScoreGroups, getAllScoreNames
+from anomalyDetection.paperCode.plottingUtilities.axoScoreUtility import axoScoreUtility
 from rapidfuzz import fuzz
+from anomalyDetection.paperCode.plottingUtilities.axol1tlInputData import AXOL1TLInputData
 
 import numpy as np
 import ugt_hls_emulator as ugt
@@ -13,110 +15,8 @@ import ugt_hls_emulator as ugt
 from rich.console import Console
 from rich.progress import track
 
-console = Console()
 
-class AXOL1TLInputData():
-    def __init__(
-            self,
-            theChain: ROOT.TChain,
-            nEGs = 4,
-            nMuons = 4,
-            nJets = 10,
-    ):
-        self.theChain = theChain
-
-        self.nEGs = nEGs
-        self.nMuons = nMuons
-        self.nJets = 10
-
-        self.inputArray = np.array([], dtype=np.int32)
-        
-        self.processChain()
-
-    def processChain(self):
-        # Put MET into the Array
-        for i in range(self.theChain.L1Upgrade.nSums):
-            if self.theChain.L1Upgrade.sumType[i] == 2 and self.theChain.L1Upgrade.sumBx[i] == 0:
-                self.inputArray = np.append(
-                    self.inputArray,
-                    [
-                        self.theChain.L1Upgrade.sumIEt[i],
-                        0, # MET Eta Always 0?
-                        self.theChain.L1Upgrade.sumIPhi[i],
-                    ]
-                )
-        # Put available electrons into the array
-        processedEGs = 0
-        for i in range(self.theChain.L1Upgrade.nEGs):
-            if self.theChain.L1Upgrade.egBx[i] == 0:
-                self.inputArray = np.append(
-                    self.inputArray,
-                    [
-                        self.theChain.L1Upgrade.egIEt[i],
-                        self.theChain.L1Upgrade.egIEta[i],
-                        self.theChain.L1Upgrade.egIPhi[i],
-                    ]
-                )
-                processedEGs += 1
-        # Add any empty slots
-        for i in range(self.nEGs - processedEGs):
-            self.inputArray = np.append(
-                self.inputArray,
-                [
-                    0,
-                    0,
-                    0,
-                ]
-            )
-        # Put available muons into the array
-        processedMuons = 0
-        for i in range(self.theChain.L1Upgrade.nMuons):
-            if self.theChain.L1Upgrade.muonBx[i] == 0:
-                self.inputArray = np.append(
-                    self.inputArray,
-                    [
-                        self.theChain.L1Upgrade.muonIEt[i],
-                        self.theChain.L1Upgrade.muonIEta[i],
-                        self.theChain.L1Upgrade.muonIPhi[i],
-                    ]
-                )
-                processedMuons += 1
-        # Add any empty slots
-        for i in range(self.nMuons - processedMuons):
-            self.inputArray = np.append(
-                self.inputArray,
-                [
-                    0,
-                    0,
-                    0,
-                ]
-            )
-        # Put available jets into the array
-        processedJets = 0
-        for i in range(self.theChain.L1Upgrade.nJets):
-            if self.theChain.L1Upgrade.jetBx[i] == 0:
-                self.inputArray = np.append(
-                    self.inputArray,
-                    [
-                        self.theChain.L1Upgrade.jetIEt[i],
-                        self.theChain.L1Upgrade.jetIEta[i],
-                        self.theChain.L1Upgrade.jetIPhi[i],
-                    ]
-                )
-                processedJets += 1
-        # Add any empty slots
-        for i in range(self.nJets - processedJets):
-            self.inputArray = np.append(
-                self.inputArray,
-                [
-                    0,
-                    0,
-                    0,
-                ]
-            )
-    def getArray(self):
-        return self.inputArray
-        
+console = Console()        
 
 class createCICADAandAXOScatterPlotTask(createPlotTask):
     def __init__(
@@ -135,6 +35,7 @@ class createCICADAandAXOScatterPlotTask(createPlotTask):
         self.scoreMaxAndMins = scoreMaxAndMinHelper()
 
         self.axoModel = getattr(ugt.anomaly_detection, 'Axol1tl_v3')
+        self.axoScoreHelper = axoScoreUtility()
 
     def createPlots(self):
         sampleNames = list(self.dictOfSamples.keys())
@@ -159,16 +60,20 @@ class createCICADAandAXOScatterPlotTask(createPlotTask):
         scoreMaxes, scoreMins  = self.scoreMaxAndMins.getScoreMaxesAndMins()
         scoreHists = {}
         for scoreName in scoreNames:
-            histName = f"{sampleName}_{scoreName}_axo"
+            histName = f"{sampleName}_xxx_{scoreName}_xxx_axo"
             scoreHists[scoreName] = ROOT.TH2D(
                 histName,
                 histName,
                 30,
                 scoreMins[scoreName],
                 scoreMaxes[scoreName],
-                30, #TODO: Add Axo into max and min infrastructure?
-                0.0,
-                2000.0,
+                #This ended up being pretty close
+                #30,
+                #0.0,
+                #2000.0,
+                30,
+                self.axoScoreHelper.maxMinData['min'],
+                self.axoScoreHelper.maxMinData['max'],
             )
         # this feels a bit like overkill, but may help us get the scores by string, instead
         # of writing it out explicitly, since getattr is not working

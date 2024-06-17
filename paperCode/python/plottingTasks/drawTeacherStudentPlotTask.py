@@ -148,12 +148,14 @@ class drawTeacherStudentPlotTask(drawPlotTask):
     def draw2D(self, theHisto, yAxisName, xAxisName, canvasName):
         theCanvas = ROOT.TCanvas(canvasName)
         outputName = self.outputPath/f"{canvasName}.png"
+        pdfOutputName = self.outputPath/f"{canvasName}.pdf"
         
         theHisto.Draw("COLZ TEXT")
         theHisto.GetXaxis().SetTitle(xAxisName)
         theHisto.GetYaxis().SetTitle(yAxisName)
         
-        quietROOTFunc(theCanvas.SaveAs)(str(outputName))                    
+        quietROOTFunc(theCanvas.SaveAs)(str(outputName))
+        quietROOTFunc(theCanvas.SaveAs)(str(pdfOutputName))                    
 
     def processDeltaScatters(self, deltaScatters, name):
         for sample in deltaScatters:
@@ -192,6 +194,7 @@ class drawTeacherStudentPlotTask(drawPlotTask):
                 theCanvas = ROOT.TCanvas(canvasName)
                 theHisto = scores[sample][score]
                 outputName = self.outputPath/f"{canvasName}.png"
+                pdfOutputName = self.outputPath/f"{canvasName}.png"
 
                 try:
                     theHisto.Scale(1.0/theHisto.Integral())
@@ -206,6 +209,7 @@ class drawTeacherStudentPlotTask(drawPlotTask):
                 theHisto.GetYaxis().SetTitle("Events (normalized to 1)")
 
                 quietROOTFunc(theCanvas.SaveAs)(str(outputName))
+                quietROOTFunc(theCanvas.SaveAs)(str(pdfOutputName))
 
     def processErrors(self, errors, name):
         for sample in errors:
@@ -214,6 +218,7 @@ class drawTeacherStudentPlotTask(drawPlotTask):
                 theCanvas = ROOT.TCanvas(canvasName)
                 theHisto = errors[sample][score]
                 outputName = self.outputPath/f"{canvasName}.png"
+                pdfOutputName = self.outputPath/f"{canvasName}.pdf"
 
                 try:
                     theHisto.Scale(1.0/theHisto.Integral())
@@ -228,3 +233,4 @@ class drawTeacherStudentPlotTask(drawPlotTask):
                 theHisto.GetYaxis().SetTitle("Events (normalized to 1)")
 
                 quietROOTFunc(theCanvas.SaveAs)(str(outputName))
+                quietROOTFunc(theCanvas.SaveAs)(str(pdfOutputName))

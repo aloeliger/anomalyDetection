@@ -78,6 +78,11 @@ class drawObjectCorrelationPlotsTask(drawPlotTask):
                 self.outputPath / f'{canvasName}.png'
             )
         )
+        quietROOTFunc(theCanvas.SaveAs)(
+            str(
+                self.outputPath / f'{canvasName}.pdf'
+            )
+        )
 
     def drawPlots(self):
         ROOT.gStyle.SetOptStat(0)

@@ -68,6 +68,9 @@ class drawCICADAPurityContentsPlotsTask(drawPlotTask):
         quietROOTFunc(theCanvas.SaveAs)(
             str(self.outputPath/f"{canvasName}.png")
         )
+        quietROOTFunc(theCanvas.SaveAs)(
+            str(self.outputPath/f"{canvasName}.pdf")
+        )
 
     def drawCICADAContentsPlots(self, overlapContentsHisto, rateStr, score):
         canvasName = f"{score}_{rateStr}_contents"
@@ -100,6 +103,9 @@ class drawCICADAPurityContentsPlotsTask(drawPlotTask):
 
         quietROOTFunc(theCanvas.SaveAs)(
             str(self.outputPath/f"{canvasName}.png")
+        )
+        quietROOTFunc(theCanvas.SaveAs)(
+            str(self.outputPath/f"{canvasName}.pdf")
         )
 
     def processPurityCurves(self, overlapPlots, noOverlapPlots):

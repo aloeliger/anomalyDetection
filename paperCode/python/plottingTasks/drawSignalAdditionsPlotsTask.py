@@ -31,7 +31,7 @@ class drawSignalAdditionsPlotsTask(drawPlotTask):
             nL1OnlyEvents = overlapHist.Integral(i, nHistBins+1)
             nCICADAOnlyEvents = noOverlapHist.Integral(i, nHistBins+1)
             try:
-                percentageAdded = (((nCICADAOnlyEvents+nL1OnlyEvents)/nL1OnlyEvents)-1.0) * 100.0
+                percentageAdded = (((nCICADAOnlyEvents+nL1OnlyEvents)/nL1OnlyEvents)) * 100.0
                 percentError = (math.sqrt(nCICADAOnlyEvents)/nL1OnlyEvents) * 100.0
             except ZeroDivisionError:
                 percentageAdded = 0.0
@@ -45,6 +45,32 @@ class drawSignalAdditionsPlotsTask(drawPlotTask):
     def removeTuneFromSignalString(self, signalString):
         return re.sub('_TuneCP5.*', '', signalString)
 
+    def replaceWithPrettyPrintLabel(self, legendLabel):
+        if legendLabel == "GluGluHToBB_M-125":
+            return "GluGluH #rightarrow bb"
+        elif legendLabel == "GluGluHToGG_M-125":
+            return "GluGluH #rightarrow GG"
+        elif legendLabel == "GluGluHToTauTau_M-125":
+            return "GluGlu #rightarrow #tau#tau"
+        elif legendLabel == "HHHTo6B_c3_0_d4_0":
+            return "HHH #rightarrow 6b"
+        elif legendLabel == "VBFHToTauTau_M125":
+            return "VBFH #rightarrow #tau#tau"
+        elif legendLabel == "VBFHto2B_M-125":
+            return "VBFH #rightarrow bb"
+        elif legendLabel == "ttHto2C_M-125":
+            return "ttH #rightarrow 2C"
+        elif legendLabel == "HTo2LongLivedTo4b_MH-350_MFF-80_CTau-500mm":
+            return "H #rightarrow 2 Long-Lived #rightarrow 4b"
+        elif legendLabel == "SUSYGluGluToBBHToBB_NarrowWidth_M-350":
+            return "SUSY GluGlu #rightarrow bbH #rightarrow bb"
+        elif legendLabel == "VBFHToInvisible_M-125":
+            return "VBFH #rightarrow Invisible"
+        elif legendLabel == "TT":
+            return "t#bar{t}"
+        else:
+            return legendLabel
+    
     def drawPlots(self):
         ROOT.gStyle.SetOptStat(0)
         signalAdditionsFile = self.dictOfFiles["signaladditions"]
@@ -83,11 +109,16 @@ class drawSignalAdditionsPlotsTask(drawPlotTask):
             ROOT.kMagenta,
             ROOT.kCyan,
             ROOT.kOrange,
-            ROOT.kSpring,
-            ROOT.kTeal,
-            ROOT.kAzure,
+            #ROOT.kSpring,
+            #ROOT.kTeal,
+            #ROOT.kAzure,
             ROOT.kViolet,
-            ROOT.kPink,
+            #ROOT.kPink,
+            30,
+            40,
+            #41,
+            42,
+            46,
         ]
 
         #TODO: Change this to a rate based addition
@@ -102,10 +133,12 @@ class drawSignalAdditionsPlotsTask(drawPlotTask):
                 500,
             )
             theCanvas.SetLogx()
-            theCanvas.SetRightMargin(0.33)
+            #theCanvas.SetLogy()
+            theCanvas.SetRightMargin(0.2)
 
             #theLegend = ROOT.TLegend(0.6, 0.6, 0.9, 0.9)
-            theLegend = ROOT.TLegend(0.667, 0.1, 1.0, 0.9)
+            #theLegend = ROOT.TLegend(0.667, 0.1, 1.0, 0.9)
+            theLegend = ROOT.TLegend(0.805, 0.1, 0.9675, 0.9)
             theLegend.SetLineWidth(0)
             theLegend.SetFillStyle(0)
             theLegend.SetTextSize(0.03)
@@ -113,14 +146,16 @@ class drawSignalAdditionsPlotsTask(drawPlotTask):
             additionsGraphs = []
             primaryGraph = None
 
+            #print()
             for index, sample in enumerate(noOverlapPlots[score]):
                 noOverlapHist = noOverlapPlots[score][sample]
                 overlapHist = overlapPlots[score][sample]
                 allHist = genericPlots[score][sample]
                 
                 additionsGraph = self.makeAdditionsPlot(noOverlapHist, overlapHist, allHist, score)
-
-                plotColor = possibleColors[index % len(possibleColors)] + 5*(index//len(possibleColors))
+                
+                plotColor = possibleColors[index % len(possibleColors)] + 5*(math.floor(index/len(possibleColors)))
+                #print(f"Using color: {plotColor}")
                 #Set the various graph specific settings
                 additionsGraph.SetMarkerStyle(20)
                 additionsGraph.SetLineWidth(2)
@@ -133,14 +168,18 @@ class drawSignalAdditionsPlotsTask(drawPlotTask):
                     additionsGraph.Draw('P')
 
                 if index == 0:
-                    additionsGraph.GetHistogram().GetXaxis().SetTitle(score+' Rate (kHz)')
-                    additionsGraph.GetHistogram().GetYaxis().SetTitle("Percent added(%)")
+                    #additionsGraph.GetHistogram().GetXaxis().SetTitle(score+' Rate (kHz)')
+                    additionsGraph.GetHistogram().GetXaxis().SetTitle('CICADA Rate (kHz)')
+                    additionsGraph.GetHistogram().GetXaxis().SetTitleOffset(1.15)
+                    additionsGraph.GetHistogram().GetYaxis().SetTitle("# CICADA Only Events + # L1 Events / # L1 Events #times 100")
                     additionsGraph.GetHistogram().SetTitle('')
                     primaryGraph = additionsGraph
                 
                 theLegend.AddEntry(
                     additionsGraph,
-                    self.removeTuneFromSignalString(sample),
+                    self.replaceWithPrettyPrintLabel(
+                        self.removeTuneFromSignalString(sample),
+                    ),
                     'p'
                 )
                 additionsGraphs.append(additionsGraph)
@@ -158,18 +197,25 @@ class drawSignalAdditionsPlotsTask(drawPlotTask):
                 else:
                     if graph.GetHistogram().GetMinimum() < axisMin:
                         axisMin = graph.GetHistogram().GetMinimum()
-            
-            primaryGraph.GetHistogram().GetYaxis().SetRangeUser(axisMin, axisMax)
+
+            #don't go higher than 1 MHz
+            #axisMax = min(1.0e3, axisMax)
+            primaryGraph.GetHistogram().GetXaxis().SetRangeUser(0.1, 1.0e2)
+            #primaryGraph.GetHistogram().GetYaxis().SetRangeUser(1.0, 2.0e3)
+            primaryGraph.GetHistogram().GetYaxis().SetRangeUser(100.0, 400.0)
 
             cmsLatex = ROOT.TLatex()
             cmsLatex.SetTextSize(0.05)
             cmsLatex.SetNDC(True)
             cmsLatex.SetTextAlign(32)
             #cmsLatex.DrawLatex(0.9,0.92, "#font[61]{CMS} #font[52]{Preliminary}")
-            cmsLatex.DrawLatex(0.667,0.92, "#font[61]{CMS} #font[52]{Preliminary}")
+            cmsLatex.DrawLatex(0.8,0.92, "#font[61]{CMS} #font[52]{Preliminary}")
             
             theLegend.Draw()
 
             quietROOTFunc(theCanvas.SaveAs)(
                 str(self.outputPath/f"{canvasName}.png")
+            )
+            quietROOTFunc(theCanvas.SaveAs)(
+                str(self.outputPath/f"{canvasName}.pdf")
             )

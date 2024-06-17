@@ -49,4 +49,9 @@ class drawCICADAandHTCorrelationTask(drawPlotTask):
                         self.outputPath / f'{sample}_xxx_{score}_xxx_HT_xxx_correlation.png'
                     )
                 )
+                quietROOTFunc(theCanvas.SaveAs)(
+                    str(
+                        self.outputPath / f'{sample}_xxx_{score}_xxx_HT_xxx_correlation.pdf'
+                    )
+                )
                 

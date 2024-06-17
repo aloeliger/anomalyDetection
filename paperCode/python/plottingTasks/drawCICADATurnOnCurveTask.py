@@ -76,6 +76,9 @@ class drawCICADATurnOnCurveTask(drawPlotTask):
         quietROOTFunc(theCanvas.SaveAs)(
             str(self.outputPath/f"{canvasName}.png")
         )
+        quietROOTFunc(theCanvas.SaveAs)(
+            str(self.outputPath/f"{canvasName}.pdf")
+        )
 
     def plot1DTurnOnCurve(self, rateHist, totalHist, sample, score, secondaryVariable, rateStr):
         canvasName = f"{sample}_xxx_{score}_xxx_{secondaryVariable}_xxx_{rateStr}_xxx_1D_turn_on"
@@ -107,6 +110,9 @@ class drawCICADATurnOnCurveTask(drawPlotTask):
 
         quietROOTFunc(theCanvas.SaveAs)(
             str(self.outputPath/f"{canvasName}.png")
+        )
+        quietROOTFunc(theCanvas.SaveAs)(
+            str(self.outputPath/f"{canvasName}.pdf")
         )
 
     def process1DPlots(self, plots1D):
