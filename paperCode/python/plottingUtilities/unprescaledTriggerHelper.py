@@ -25,7 +25,7 @@ class unprescaledTriggerHelper():
 
     def getListOfTriggers(self, dataframe):
         listOfColumns = dataframe.GetColumnNames()
-        listOfTriggers = [str(x) for x in listOfColumns if ('L1_' in str(x) and '_prescale' not in str(x))]
+        listOfTriggers = [str(x) for x in listOfColumns if ('L1_' in str(x) and '_prescale' not in str(x) and '_initial' not in str(x))]
         listOfTriggers = [x.split('.')[1] for x in listOfTriggers]
         return listOfTriggers
 
