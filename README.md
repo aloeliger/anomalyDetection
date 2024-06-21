@@ -1,4 +1,30 @@
 # Main repository for Anomaly Detection work and submodules.
+## Setup for Unpacker Studies (Jun 21st, 2024):
+### CMSSW Setup
+```
+#set-up the initial CMSSW repository
+cmsrel CMSSW_14_1_0_pre3
+cd CMSSW_14_1_0_pre3/src/
+cmsenv && git cms-init
+
+#Get some of the modifications/configurations I have made for running multiple copies of the emulator
+git cms-rebase-topic -u aloeliger:CICADA_Unpacker_Study
+
+#Get this repository
+git clone --recursive https://github.com/aloeliger/anomalyDetection.git
+#Now we need to get CICADA firmware models for the emulator and some of the things we use for that
+cd anomalyDetection/
+#need to get the xilinx ap_types repo, but need it to be called "hls" for CMSSW reasons
+git clone https://github.com/Xilinx/HLS_arbitrary_Precision_Types hls
+
+#Now, we first try compiling the CICADA firmware models
+cd hls4mlEmulatorExtras/
+make install #important to do this instead of just making it.
+cd ../CICADA/
+make #if this causes errors, stop, either try to fix them or reach out to me/someone
+cd ../../
+scram b -j 8 #make everything else,may complain about some scripts or non-cmssw files. Should work. mostly.
+```
 ## Setup for paper studies (Jan 19th, 2024):
 ### Initial CMSSW Setup
 ```
