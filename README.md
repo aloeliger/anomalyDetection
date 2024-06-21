@@ -25,6 +25,10 @@ make #if this causes errors, stop, either try to fix them or reach out to me/som
 cd ../../
 scram b -j 8 #make everything else,may complain about some scripts or non-cmssw files. Should work. mostly.
 ```
+### Example cmsDriver command:
+```
+cmsDriver.py L1Ntuples -s RAW2DIGI,L1 --era=Run3 --data --conditions=auto:run3_data --customise=L1Trigger/Configuration/customiseReEmul.L1TReEmulFromRAW,L1Trigger/L1TNtuples/customiseL1Ntuple.L1NtupleRAWEMU --filein=/store/data/Run2024F/ZeroBias/RAW/v1/000/382/250/00000/0156c5c9-374b-4031-9c36-035c7b2e0f07.root --fileout=file:./test.root -n 10
+```
 ## Setup for paper studies (Jan 19th, 2024):
 ### Initial CMSSW Setup
 ```
