@@ -44,12 +44,35 @@ class drawScorePlotsTask(drawPlotTask):
             ROOT.kMagenta,
             ROOT.kCyan,
             ROOT.kOrange,
-            ROOT.kSpring,
-            ROOT.kTeal,
-            ROOT.kAzure,
-            ROOT.kViolet,
-            ROOT.kPink,
+            #ROOT.kSpring,
+            #ROOT.kTeal,
+            #ROOT.kAzure,
+            #ROOT.kViolet,
+            #ROOT.kPink,
         ]
+
+        # possibleColors = [
+        #     (255,0,0), # red
+        #     (0,0,255), # blue
+        #     (0,255,0), # green
+        #     (255,165,0), # orange
+        #     (128, 0, 128), #purple
+        #     (0,255,255), #cyan
+        #     (255,0,255), # magenta
+        #     (255,255,0), #yellow
+        #     (0, 128, 0), #dark green
+        #     (173, 216, 230), #light blue
+        #     (255, 192, 203), #pink
+        #     (163, 42, 42), #brown
+        #     (169, 169, 169), #dark gray
+        #     (255, 200, 150), #light orange
+        # ]
+
+        plotsToNotDraw = [
+            'Train_ZeroBias',
+            
+        ]
+        
         #TODO: This is a bit of a nightmare. Abstract?
         for scoreIndex, scoreName in enumerate(plots):
             theCanvas = ROOT.TCanvas(
@@ -67,22 +90,35 @@ class drawScorePlotsTask(drawPlotTask):
 
             scorePlots = []
             primaryPlot = None
+            skipSample = False
+            isFirstPlot = True
 
             for sampleIndex, sampleName in enumerate(plots[scoreName]):
+                for skippedSampleName in plotsToNotDraw:
+                    if skippedSampleName in sampleName:
+                        skipSample = True
+                if skipSample:
+                    skipSample=False
+                    continue
+                    
                 plots[scoreName][sampleName].Scale(1.0/plots[scoreName][sampleName].Integral()) #Bad .Integral() issue?
                 #let's figure out the color of this thing
                 baseColor = possibleColors[sampleIndex % len(possibleColors)]
-                colorOffset = 5*(sampleIndex // len(possibleColors))
+                # rgbValues = possibleColors[sampleIndex%len(possibleColors)]
+                # baseColor = ROOT.TColor(rgbValues[0]/255.0, rgbValues[1]/255.0, rgbValues[2]/255.0)
+                colorOffset = -5*(sampleIndex // len(possibleColors))
+                #colorOffset = 0
                 
                 plots[scoreName][sampleName].SetLineWidth(2)
                 plots[scoreName][sampleName].SetMarkerStyle(20)
-                plots[scoreName][sampleName].SetLineColor(baseColor+colorOffset)
-                plots[scoreName][sampleName].SetMarkerColor(baseColor+colorOffset)
+                plots[scoreName][sampleName].SetLineColor(baseColor + colorOffset)
+                plots[scoreName][sampleName].SetMarkerColor(baseColor + colorOffset)
 
-                if sampleIndex == 0:
+                if isFirstPlot:
                     plots[scoreName][sampleName].SetTitle("")
                     drawOpts = "E1 X0"
                     primaryPlot = plots[scoreName][sampleName]
+                    isFirstPlot = False
                 else:
                     drawOpts = "E1 SAME X0"
                 scorePlots.append(plots[scoreName][sampleName])
