@@ -49,7 +49,7 @@ class drawPaperROCPlotTask(drawPlotTask):
         for i in range(len(signal_effs)):
             ROCCurve.SetPoint(
                 i,
-                background_effs[i]
+                background_effs[i],
                 signal_effs[i]
             )
 
