@@ -16,7 +16,7 @@ class axoScoreUtility():
             defaultMax = 10000.0,
     ):
         self.jsonLocation = jsonLocation
-        self.maxMinData = self.loadMaxesAndMins
+        self.maxMinData = self.loadMaxesAndMins()
 
     def loadMaxesAndMins(self):
         try:
