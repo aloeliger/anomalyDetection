@@ -33,15 +33,15 @@ cmsDriver.py L1Ntuples -s RAW2DIGI,L1 --era=Run3 --data --conditions=auto:run3_d
 ### Initial CMSSW Setup
 ```
 #set-up the initial CMSSW repository
-cmsrel CMSSW_14_0_0_pre2
-cd CMSSW_14_0_0_pre2/src/
+cmsrel CMSSW_14_1_0_pre7
+cd CMSSW_14_1_0_pre7/src/
 cmsenv && git cms-init
 
 #Add the L1TCaloLayer 1 where the CICADA emulator proper is
 git cms-addpkg L1Trigger/L1TCaloLayer1
 
 #Get some of the modifications/configurations I have made for running multiple copies of the emulator
-git cms-rebase-topic aloeliger:CICADA_Paper_Mods_14_0_0_pre2
+git cms-rebase-topic aloeliger:CICADA_Paper_Mods_14_1_0_pre7
 
 #Get this repository
 git clone --recursive https://github.com/aloeliger/anomalyDetection.git
@@ -57,6 +57,12 @@ cd ../CICADA/
 make #if this causes errors, stop, either try to fix them or reach out to me/someone
 cd ../../
 scram b -j 8 #make everything else,may complain about some scripts or non-cmssw files. Should work. mostly.
+
+#Get the axo emulator
+python3 -m venv axoEnv
+source axoEnv/bin/activate
+pip3 install git+https://gitlab.cern.ch/ssummers/run3_ugt_ml
+git clone https://gitlab.cern.ch/cms-l1-ad/axol1tl-producer.git
 ```
 ### Paper code
 This repository is a mix of a large number of different sub-projects (and even repositories) I have created working on the CICADA project. I am trying to centralize all paper under the `paperCode` directory.
