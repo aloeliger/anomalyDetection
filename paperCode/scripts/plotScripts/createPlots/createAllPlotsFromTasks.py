@@ -17,6 +17,8 @@ from anomalyDetection.paperCode.plottingTasks.createCICADAPurityContentPlotTask 
 from anomalyDetection.paperCode.plottingTasks.createObjectCorrelationPlotsTask import createObjectCorrelationPlotsTask
 from anomalyDetection.paperCode.plottingTasks.createObjectControlPlotsTask import createObjectControlPlotsTask
 from anomalyDetection.paperCode.plottingTasks.createCICADAandAXOScatterPlotTask import createCICADAandAXOScatterPlotTask
+from anomalyDetection.paperCode.plottingTasks.createAXOL1TLScorePlotTask import createAXOL1TLScorePlotTask
+from anomalyDetection.paperCode.plottingTasks.createCICADAStabilityPlotTask import createCICADAStabilityPlotTask
 
 from anomalyDetection.paperCode.samples.paperSampleBuilder import reducedSamples as samples
 
@@ -126,18 +128,31 @@ def main(args):
         outputFileName = 'CICADAandAXOScatterPlots.root',
         dictOfSamples = samples,
     )
+    AXOL1TLScorePlotTask = createAXOL1TLScorePlotTask(
+        taskName = 'AXOL1TL Score Plots',
+        outputFileName = 'Axol1tlScorePlots.root',
+        dictOfSamples = samples,
+    )
+
+    CICADAStabilityPlotTask = createCICADAStabilityPlotTask(
+        taskName = 'CICADA Stability Plots',
+        outputFileName = 'cicadaStabilityPlots.root',
+        dictOfSamples = samples,
+    )
 
     allTasks = [
-        scoreTask,
-        rocScoreTask,
-        HTCorrelationTask,
-        teacherStudentTask,
-        signalAdditionsTask,
-        CICADATurnOnTask,
-        CICADAPurityContentPlotTask,
-        objectCorrelationPlotsTask,
-        objectControlPlotsTask,
-        CICADAandAxoScatterTask,
+        # scoreTask,
+        # rocScoreTask,
+        # HTCorrelationTask,
+        # teacherStudentTask,
+        # signalAdditionsTask,
+        # CICADATurnOnTask,
+        # CICADAPurityContentPlotTask,
+        # objectCorrelationPlotsTask,
+        # objectControlPlotsTask,
+        # CICADAandAxoScatterTask,
+        # AXOL1TLScorePlotTask,
+        CICADAStabilityPlotTask,
     ]
 
     start_time = perf_counter()

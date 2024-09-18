@@ -12,6 +12,7 @@ from anomalyDetection.paperCode.plottingTasks.drawCICADAPurityContentsPlotsTask 
 from anomalyDetection.paperCode.plottingTasks.drawCICADATurnOnCurveTask import drawCICADATurnOnCurveTask
 from anomalyDetection.paperCode.plottingTasks.drawObjectCorrelationPlotsTask import drawObjectCorrelationPlotsTask
 from anomalyDetection.paperCode.plottingTasks.drawObjectControlPlotsTask import drawObjectControlPlotsTask
+from anomalyDetection.paperCode.plottingTasks.drawCICADAandAXOScatterPlotsTask import drawCICADAandAXOScatterPlotsTask
 
 
 console = Console()
@@ -90,16 +91,30 @@ def main(args):
             'controls': '/nfs_scratch/aloeliger/PaperPlotFiles/PlotFiles/CICADAObjectControlPlots.root'
         }
     )
+    theCICADAandAXOScatterPlotsTask = drawCICADAandAXOScatterPlotsTask(
+        taskName = 'Draw CICADA and AXO Scatters',
+        dictOfFiles = {
+            'scatters': '/nfs_scratch/aloeliger/PaperPlotFiles/PlotFiles/CICADAandAXOScatterPlots.root'
+        }
+    )
+    AXOL1TLDrawScorePlotsTask = drawScorePlotsTask(
+        taskName = 'Draw AXOL1TL Score Plots',
+        dictOfFiles = {
+            'scores': '/nfs_scratch/aloeliger/PaperPlotFiles/PlotFiles/Axol1tlScorePlots.root'
+        },
+    )
 
     allTasks = [
         theDrawScorePlotsTask,
-        theTeacherStudentPlotsTask,
-        theHTCorrelationPlotTask,
-        theSignalAdditionsPlotTask,
-        thePurityContentsTask,
-        theTurnOnCurveTask,
-        theDrawObjectCorrelationTask,
-        theDrawObjectControlPlotsTask,
+        AXOL1TLDrawScorePlotsTask,
+        #theTeacherStudentPlotsTask,
+        #theHTCorrelationPlotTask,
+        #theSignalAdditionsPlotTask,
+        #thePurityContentsTask,
+        #theTurnOnCurveTask,
+        #theDrawObjectCorrelationTask,
+        #theDrawObjectControlPlotsTask,
+        #theCICADAandAXOScatterPlotsTask,
     ]
 
     drawPlots(allTasks)
