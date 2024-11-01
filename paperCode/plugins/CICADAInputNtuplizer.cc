@@ -45,14 +45,14 @@ CICADAInputNtuplizer::CICADAInputNtuplizer(const edm::ParameterSet& iConfig):
 {
     usesResource("TFileService");
     triggerTree = theFileService->make< TTree >("CICADAInputTree","(emulator) region information");
-    triggerTree -> Branch("modelInput", &modelInput, "modelInput[18][14]/s");
+    triggerTree -> Branch("modelInput", &modelInput, "modelInput[18][14]/I");
     triggerTree -> Branch("tauBits", &tauBits, "tauBits[18][14]/O");
     triggerTree -> Branch("egBits", &egBits, "tauBits[18][14]/O");
 }
 
 void CICADAInputNtuplizer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-    edm::Handle<std::vector<L1CaloRegion>> emuRegions;
+  edm::Handle<std::vector<L1CaloRegion>> emuRegions;
     iEvent.getByToken(regionsToken, emuRegions);
     for(const L1CaloRegion& theRegion: *emuRegions)
     {
