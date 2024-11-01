@@ -191,6 +191,9 @@ process.gadgetModelsSequence = cms.Sequence(
     process.GADGET_v1p0p0_Teacher_Ntuplizer
 )
 
+process.load('anomalyDetection.anomalyTriggerSkunkworks.unpackedScoreNtuplizer_cfi')
+process.load('anomalyDetection.anomalyTriggerSkunkworks.unprefirableInformationNtuplizer_cfi')
+
 process.NtuplePath = cms.Path(
     process.CICADAv1p1p0Ntuplizer +
     process.CICADAv2p1p0Ntuplizer +
@@ -201,7 +204,9 @@ process.NtuplePath = cms.Path(
     process.L1TTriggerBitsNtuplizer +
     process.CICADAInputNtuplizer +
     process.kerasModelsSequence +
-    process.gadgetModelsSequence
+    process.gadgetModelsSequence +
+    process.unpackedCICADAScoreNtuplizer +
+    process.unprefirableInformationNtuplizer
 )
 
 process.schedule.append(process.NtuplePath)
