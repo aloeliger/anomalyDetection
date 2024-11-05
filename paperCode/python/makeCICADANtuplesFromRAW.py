@@ -157,6 +157,7 @@ process.CICADAv2p1p2Ntuplizer = L1TCaloSummaryTestNtuplizer.clone(
 process.load("anomalyDetection.paperCode.CICADAInputNtuplizer_cfi")
 
 process.load('anomalyDetection.anomalyTriggerSkunkworks.L1TTriggerBitsNtuplizer_cfi')
+process.load('anomalyDetection.paperCode.simpleSumNtuplizer_cfi')
 
 # Add trained keras models to the ntuples
 process.load("anomalyDetection.paperCode.kerasModels_cfi")
@@ -201,7 +202,8 @@ process.NtuplePath = cms.Path(
     process.L1TTriggerBitsNtuplizer +
     process.CICADAInputNtuplizer +
     process.kerasModelsSequence +
-    process.gadgetModelsSequence
+    process.gadgetModelsSequence +
+    process.simpleSumNtuplizer
 )
 
 process.schedule.append(process.NtuplePath)
