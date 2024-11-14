@@ -206,7 +206,7 @@ process.NtuplePath = cms.Path(
     process.CICADAInputNtuplizer +
     process.kerasModelsSequence +
     process.gadgetModelsSequence +
-    process.simpleSumNtuplizer
+    process.simpleSumNtuplizer +
     process.unpackedCICADAScoreNtuplizer +
     process.unprefirableInformationNtuplizer
 )
