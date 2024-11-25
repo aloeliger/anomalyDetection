@@ -78,15 +78,25 @@ def makeCICADAPlot(theChain, identifier):
     
 def main():
     ROOT.gStyle.SetOptStat(0)
+    # beforeRuns = {
+    #     '386640': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386640',
+    #     '386661': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386661',
+    #     '386668': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386668',
+    # }
+    # afterRuns = {
+    #     '386673': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386673',
+    #     '386679': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386679',
+    #     '386694': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386694',
+    # }
     beforeRuns = {
-        '386640': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386640',
-        '386661': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386661',
-        '386668': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386668',
+        '386640': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386640',
+        '386661': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386661',
+        '386668': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386668',
     }
     afterRuns = {
-        '386673': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386673',
-        '386679': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386679',
-        '386694': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386694',
+        '386673': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386673',
+        '386679': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386679',
+        '386694': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386694',
     }
 
     beforeECALChain, beforeHCALChain, beforeCICADAChain = makeChainFromDict(beforeRuns)
