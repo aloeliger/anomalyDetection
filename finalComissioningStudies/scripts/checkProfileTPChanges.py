@@ -151,10 +151,21 @@ def main():
         '386661': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386661',
         '386668': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386668',
     }
+    # afterRuns = {
+    #     '386673': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386673',
+    #     '386679': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386679',
+    #     '386694': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386694',
+    # }
+
+    #beforeRuns = {
+    #    '386673': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386673',
+    #    '386679': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386679',
+    #    '386694': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386694',
+    #}
+
     afterRuns = {
-        '386673': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386673',
-        '386679': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386679',
-        '386694': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386694',
+        '386945': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386945/',
+        '386951': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386951/'
     }
 
     beforeECALChain, beforeHCALChain, beforeCICADAChain = makeChainFromDict(beforeRuns)
@@ -253,7 +264,7 @@ def main():
     CICADARatio.SetTitle("CICADA After/Before")
     CICADARatio.Divide(beforeCICADAHisto)
     CICADARatio.Draw("HIST")
-    CICADARatio.GetYaxis().SetRangeUser(1.0, 1.15)
+    CICADARatio.GetYaxis().SetRangeUser(0.85, 1.15)
     theCanvas.SaveAs("CICADA_REgion_IEta_Ratio.png")
 
     # Draw 2D Plots and ratios
