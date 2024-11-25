@@ -37,7 +37,7 @@ class CICADA2DInputShift():
 
         for eta in self.shifts:
             for phi in self.shifts[eta]:
-                inputCopy[:, phi-1, eta-1] = inputCopy[:, phi-1, eta-1] * self.shifts[eta][phi]
+                inputCopy[:, phi-1, eta-1] = inputCopy[:, phi-1, eta-1 ] * self.shifts[eta][phi]
         return inputCopy
     
 def makeShifts(theJson):
@@ -131,15 +131,25 @@ def main():
     model = from_pretrained_keras("cicada-project/cicada-v2.1")
 
     ROOT.gStyle.SetOptStat(0)
+    # beforeRuns = {
+    #     '386640': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386640',
+    #     '386661': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386661',
+    #     '386668': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386668',
+    # }
+    # afterRuns = {
+    #     '386673': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386673',
+    #     '386679': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386679',
+    #     '386694': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386694',
+    # }
     beforeRuns = {
-        '386640': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386640',
-        '386661': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386661',
-        '386668': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386668',
+        '386640': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386640',
+        '386661': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386661',
+        '386668': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386668',
     }
     afterRuns = {
-        '386673': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386673',
-        '386679': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386679',
-        '386694': '/hdfs/store/user/aloeliger/rateJumpSubmission_TPGs/Run386694',
+        '386673': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386673',
+        '386679': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386679',
+        '386694': '/hdfs/store/user/aloeliger/rateJumpSubmission_JetMET/Run386694',
     }
 
     beforeECALChain, beforeHCALChain, beforeCICADAChain = makeChainFromDict(beforeRuns)
@@ -171,7 +181,7 @@ def main():
     inputShift_2d = make2DShifts(regionShifts_2D)
 
     moreShiftedInputs = inputShift_2d.applyToInput(CICADAInputs)
-    shiftedPredictions.model.predict(moreShiftedInputs.reshape((-1, 252)))
+    shiftedPredictions = model.predict(moreShiftedInputs.reshape((-1, 252)))
 
     console.print(f'Mean shifted predictions: {np.mean(shiftedPredictions)}')
     console.print(f'Std shifted predictions: {np.std(shiftedPredictions)}')
