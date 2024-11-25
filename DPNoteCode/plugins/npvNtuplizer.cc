@@ -47,9 +47,9 @@ npvNtuplizer::npvNtuplizer(const edm::ParameterSet& iConfig):
   usesResource("TFileService");
 
   npvTree = theFileService->make<TTree>("NPVTree","Reconstructed Vertex Information");
-  npvTree->Branch("run", &run);
-  npvTree->Branch("lumi", &lumi);
-  npvTree->Branch("evt", &evt);
+  //npvTree->Branch("run", &run);
+  //npvTree->Branch("lumi", &lumi);
+  //npvTree->Branch("evt", &evt);
   npvTree->Branch("npv", &npv);
 }
 
