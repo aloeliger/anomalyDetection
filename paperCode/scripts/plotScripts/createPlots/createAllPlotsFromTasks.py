@@ -147,12 +147,12 @@ def main(args):
         # teacherStudentTask,
         # signalAdditionsTask,
         # CICADATurnOnTask,
-        # CICADAPurityContentPlotTask,
-        # objectCorrelationPlotsTask,
-        # objectControlPlotsTask,
+        #CICADAPurityContentPlotTask,
+        objectCorrelationPlotsTask,
+        objectControlPlotsTask,
         # CICADAandAxoScatterTask,
         # AXOL1TLScorePlotTask,
-        CICADAStabilityPlotTask,
+        # CICADAStabilityPlotTask,
     ]
 
     start_time = perf_counter()

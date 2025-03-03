@@ -133,6 +133,7 @@ def makeCondorSubmission(
 
 def makeCrabSubmission(
         theSettings:submissionSettings,
+        nFiles=2,
         runRange=None,
         isData=False,
 ):
@@ -140,6 +141,9 @@ def makeCrabSubmission(
     pythonConfigName = f"{theSettings.basePath}/submit.py"
     crabPythonConfig = open(pythonConfigName, "w")
 
+    splitSampleName = theSettings.fullSampleName.split('/')
+    splitSampleName.remove('')
+    
     configContents = ""
 
     configContents+="from CRABClient.UserUtilities import config\nimport os\nimport datetime\n\n"
@@ -157,14 +161,10 @@ def makeCrabSubmission(
     configContents+='config.JobType.maxMemoryMB = 4000\n'
     CICADALocation = f'{os.environ["CMSSW_BASE"]}/src/anomalyDetection/CICADA'
     configContents+=f'config.JobType.inputFiles=[\'{CICADALocation}\']\n\n'
-
-    splitSampleName = theSettings.fullSampleName.split('/')
-    splitSampleName.remove('')
-
     configContents+=f'config.Data.inputDataset=\'{theSettings.fullSampleName}\'\n'
     configContents+='config.Data.inputDBS = \'global\'\n'
     configContents+='config.Data.splitting = \'FileBased\'\n'
-    configContents+='config.Data.unitsPerJob = 1\n'
+    configContents+=f'config.Data.unitsPerJob = {nFiles}\n'
     if runRange != None:
         configContents += f'config.Data.runRange = \'{runRange}\'\n'
     configContents+='config.Data.publication = False\n'
@@ -229,6 +229,9 @@ def main(args) -> None:
             splitSampleName = fullSampleName.split('/')
             splitSampleName.remove('')
             sampleName = splitSampleName[0]
+            if args.isData:
+                sampleName += f'_{splitSampleName[1]}'
+                jobName = f'Paper_Ntuples_{currentTimeStr}' + f'_{splitSampleName[1]}'
             progress.console.rule(sampleName)
             
             basePath = f'/nfs_scratch/{identity}/CICADA_Paper_Ntuples/{sampleName}_{currentTimeStr}'
@@ -255,6 +258,7 @@ def main(args) -> None:
             elif args.crab:
                 makeCrabSubmission(
                     theSettings,
+                    args.filesPerJob,
                     args.runRange,
                     args.isData,
                 )
@@ -302,6 +306,13 @@ if __name__ == '__main__':
     parser.add_argument(
         '--jobSplitting',
         help='Job splitting parameter for crab based submissions'
+    )
+
+    parser.add_argument(
+        '--filesPerJob',
+        default=2,
+        type=int,
+        help='Number of files to process per single job. Default 2.'
     )
 
     args = parser.parse_args()

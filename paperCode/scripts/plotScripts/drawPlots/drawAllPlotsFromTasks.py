@@ -105,15 +105,15 @@ def main(args):
     )
 
     allTasks = [
-        theDrawScorePlotsTask,
-        AXOL1TLDrawScorePlotsTask,
+        #theDrawScorePlotsTask,
+        #AXOL1TLDrawScorePlotsTask,
         #theTeacherStudentPlotsTask,
         #theHTCorrelationPlotTask,
         #theSignalAdditionsPlotTask,
         #thePurityContentsTask,
         #theTurnOnCurveTask,
-        #theDrawObjectCorrelationTask,
-        #theDrawObjectControlPlotsTask,
+        theDrawObjectCorrelationTask,
+        theDrawObjectControlPlotsTask,
         #theCICADAandAXOScatterPlotsTask,
     ]
 
