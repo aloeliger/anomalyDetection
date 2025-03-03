@@ -13,6 +13,10 @@
 # so what we need is pure event score, non pure event scores, and way to translate each score into
 # a pure rate necesary to have caught this
 
+from sklearn.metrics import roc_curve, auc
+import matploylib.pyplot as plt
+import numpy as np
+
 def get_rate_with_nonexact_threshold(rate_table, threshold):
     table_keys = list(rate_table.keys())
     low_bin = 0
@@ -40,3 +44,32 @@ def get_rate_with_nonexact_threshold(rate_table, threshold):
 
 def make_signal_acceptance_plot(pure_mc_scores, non_pure_mc_scores, pure_rate_table):
     pass
+
+def make_roc_plot(
+        signal_predictions,
+        background_predictions,
+        save_location
+):
+    plt.figure()
+    
+    for signal in singal_predictions:
+        true_values = np.zeros((len(background_predictions),))
+        true_values = np.append(
+            true_values,
+            np.ones((len(signal_predictions[signal]),)),
+            axis=0
+        )
+
+        scores = np.append(background_predictions, signal_predictions[signal])
+
+        fpr, tpr, threshold = roc_curve(y_true, y_scores)
+
+        roc_auc = auc(fpr, tpr)
+
+        plt.plot(fpr, tpr, lw=2, label=f'{signal} (AUC = {roc_auc:.2f})')
+    plt.plot([0,1], [0,1], color='gray', linestyle='--')
+    plt.xlabel('Zero Bias Acceptance')
+    plt.ylabel('Signal Acceptance')
+    plt.legend(loc='lower right')
+    plt.savefig(f'{save_location}')
+    

@@ -47,36 +47,6 @@ def add_score_to_sample_with_model(sample, model, score_name):
     sample = add_score_to_sample(sample, predictions, score_name)
     return sample
 
-def get_threshold_from_rate_table(rate_table, rate):
-    table_keys = list(rate_table.keys())
-    n_table_keys = len(table_keys)
-
-    low_key = 0
-    high_key = n_table_keys-1
-    prev_search_bin = None
-    search_bin = (low_key + high_key) // 2
-
-    while (search_bin != prev_search_bin):
-        search_rate = rate_table[
-            table_keys[search_bin]
-        ]
-
-        if search_rate == rate:
-            break
-        
-        if search_rate > rate: #we are searching a bin too low
-            low_key = search_bin
-        else:
-            high_key = search_bin
-
-        prev_search_bin = search_bin
-        search_bin = (low_key + high_key) // 2
-
-    threshold = table_keys[search_bin]
-    final_rate = rate_table[threshold]
-
-    return threshold, final_rate
-
 #Okay, we need to make all the bookings here
 def make_all_phase_space_bookings(sample, overall_rate_table, pure_rate_table, score_name):
     #First we need to define a set of rate thresholds we want to investigate

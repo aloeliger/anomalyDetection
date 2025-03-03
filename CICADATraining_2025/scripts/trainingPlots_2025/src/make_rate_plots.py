@@ -24,7 +24,10 @@ def make_CDF(score_plot):
     complete_integral = score_plot.Integral(1, n_score_bins)
 
     for bin_num in range(1, n_score_bins+1):
-        fraction = score_plot.Integral(bin_num, n_score_bins) / complete_integral
+        try:
+            fraction = score_plot.Integral(bin_num, n_score_bins) / complete_integral
+        except ZeroDivisionError:
+            fraction = 0.0
         cdf_plot.SetBinContent(bin_num, fraction)
 
     return cdf_plot

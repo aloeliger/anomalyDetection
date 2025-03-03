@@ -134,6 +134,7 @@ def main():
                 #pure score plot
                 pure_score_output_dir = base_path/f"{sample}/{model}/Pure/"
                 pure_score_output_dir.mkdir(exist_ok=True, parents=True)
+                file_name = f'{pure_score_output_dir}/scores_{group_num}.root'
                 mask = (sample_pure == 1)
                 sp.make_score_plot_from_group(
                     model_predictions[mask],
@@ -145,6 +146,7 @@ def main():
                 for npv_bin in npv_bins:
                     npv_output_dir = base_path/f"{sample}/{model}/NPV_{npv_bin[0]}_{npv_bin[1]}/"
                     npv_output_dir.mkdir(exist_ok=True, parents=True)
+                    file_name = f'{npv_output_dir}/scores_{group_num}.root'
                     mask = (sample_pure == 1) & (sample_npvs >= npv_bin[0]) & (sample_npvs <= npv_bin[1])
                     sp.make_score_plot_from_group(
                         model_predictions[mask],
@@ -156,8 +158,9 @@ def main():
                 for cicada_average_bin in cicada_average_bins:
                     bin_low_edge_str = str(cicada_average_bin[0]).replace('.', 'p')
                     bin_high_edge_str = str(cicada_average_bin[1]).replace('.', 'p')
-                    cicada_average_output_dir = base_path/f"{sample}/CICADA_average_{bin_low_edge_str}_{bin_high_edge_str}/"
+                    cicada_average_output_dir = base_path/f"{sample}/{model}/CICADA_average_{bin_low_edge_str}_{bin_high_edge_str}/"
                     cicada_average_output_dir.mkdir(exist_ok=True, parents=True)
+                    file_name = f'{cicada_average_output_dir}/scores_{group_num}.root'
                     mask = (sample_pure == 1) & (sample_input_averages >= cicada_average_bin[0]) & (sample_input_averages <= cicada_average_bin[1])
                     sp.make_score_plot_from_group(
                         model_predictions[mask],

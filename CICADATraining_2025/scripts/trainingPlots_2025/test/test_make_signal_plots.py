@@ -6,6 +6,7 @@ from ..src.make_score_plots import get_all_inputs
 from .test_make_score_plots import student_model
 from .test_make_phase_space_plots import dummy_rate_table
 from .test_utils import unprescaled_triggers
+from .test_sample import sample_paths, trees, low_stat_data_sample
 import json
 import os
 
@@ -70,3 +71,5 @@ def test_make_signal_acceptance_plot(htolonglived_sample, mc_like_calo_inputs, m
     # pure_mc_inputs = get_all_inputs(htolonglived_sample.df.Filter('pure_event == 1.0'))
     # pure_mc_scores = 
     
+def test_make_roc_plot(low_stat_data_sample):
+    pass

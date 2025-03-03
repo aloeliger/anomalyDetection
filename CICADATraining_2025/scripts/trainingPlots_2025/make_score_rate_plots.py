@@ -27,7 +27,7 @@ console = Console()
 # DONE: Rate and Purity exclusively on the last run, RunI
 # DONE: Dump Out Thresholds
 
-#DONE: Prune Bad runs
+# DONE: Prune Bad runs
 # DONE: Get all thresolds vs rates in json form
 
 def main(args):
@@ -100,28 +100,20 @@ def main(args):
 
     for sample in samples:
         console.log(f'\t{sample}')
-        filter_bad_events(samples[sample])
-        samples[sample] = make_pure_event_variable_from_list(samples[sample], unprescaled_trigger_list)
-        samples[sample].pure_df = samples[sample].df.Filter('pure_event ==  1')
+        samples[sample].df = filter_bad_events(samples[sample].df)
+        samples[sample].df = define_cicada_average_variable(samples[sample].df)
+        samples[sample].df = make_pure_event_variable_from_list(samples[sample].df, unprescaled_trigger_list)
     
     # DONE: From there, rip the inputs out of each, and then the NPVs
     inputs = {}
     npvs = {}
+    purity = {}
+    cicada_averages = {}
     
-    pure_inputs = {}
-    pure_npvs = {}
-
     console.log('Overall inputs')
     for sample in samples:
         console.log(f'\t{sample}')
-        inputs[sample], _, _, _ = sp.get_all_inputs(samples[sample].df)
-        npvs = rp.get_secondary_inputs(samples[sample].df)
-
-    console.log('Pure inputs')
-    for sample in samples:
-        console.log(f'\t{sample}')
-        pure_inputs[sample], _, _, _ = sp.get_all_inputs(samples[sample].pure_df)
-        pure_npvs[sample] = rp.get_secondary_inputs(samples[sample].pure_df)
+        inputs[sample], purity[sample], npvs[sample], cicada_averages[sample] = sp.get_all_inputs(samples[sample].df)
         
     #DONE: Let's get all the models we want to use
     console.log('Getting models')
@@ -143,13 +135,10 @@ def main(args):
     }
     #DONE: Let's make all the score predictions
     score_predictions = {}
-    pure_score_predictions = {}
     for model in models:
         score_predictions[model] = {}
-        pure_score_predictions[model] = {}
         for sample in samples:
             score_predictions[model][sample] = models[model].predict(inputs[sample])
-            pure_score_predictions[model][sample] = models[model].predict(pure_inputs[sample])
 
     #DONE: Let's get an output directory
     base_output_dir = Path(args.output_dir)
@@ -180,9 +169,9 @@ def main(args):
     pure_score_output_dir.mkdir(exist_ok=True, parents=True)
     
     pure_score_plots = {}
-    for model in pure_score_predictions:
+    for model in score_predictions:
         pure_score_plots[model] = sp.make_score_plot_from_predictions(
-            pure_score_predictions[model]['RecentRuns'],
+            score_predictions[model]['RunI'][purity['RunI'] == 1],
             tag=f'{model}_sample_pure'
         )
     histo_name = f'{pure_score_output_dir}/pure_score_plot.png'
@@ -196,8 +185,10 @@ def main(args):
     rate_plot_output_dir = base_output_dir/'RatePlots'
     rate_plot_output_dir.mkdir(exist_ok=True, parents=True)
     rate_plots = {}
-    for model in score_plots:
-        cdf_plot = rp.make_CDF(score_plots[model]['RecentRuns'])
+    for model in pure_score_plots:
+        cdf_plot = rp.make_CDF(
+            score_plots[model]['RunI']
+        )
         rate_plot = rp.make_rate_plot(cdf_plot)
         rate_plots[model] = rate_plot
 
@@ -214,7 +205,9 @@ def main(args):
     pure_rate_plot_output_dir.mkdir(exist_ok=True, parents=True)
     pure_rate_plots={}
     for model in pure_score_plots:
-        cdf_plot = rp.make_CDF(pure_score_plots[model])
+        cdf_plot = rp.make_CDF(
+            pure_score_plots[model]
+        )
         rate_plot = rp.make_rate_plot(cdf_plot)
         pure_rate_plots[model] = rate_plot
 
@@ -229,12 +222,12 @@ def main(args):
     pure_rate_vs_npv_output_dir = base_output_dir/'PureRateVsNPV'
     pure_rate_vs_npv_output_dir.mkdir(exist_ok=True, parents=True)
     pure_rate_vs_npv_plots = {}
-    for model in pure_score_predictions:
+    for model in score_predictions:
         chosen_kHz_threshold, _ = rp.get_threshold_for_rate(5.0, pure_rate_plots[model])
         rate_vs_npv_plot = rp.make_rate_vs_variable_plot(
-            pure_score_predictions[model]['RecentRuns'],
+            score_predictions[model]['RunI'][purity['RunI'] == 1],
             chosen_kHz_threshold,
-            pure_npvs['RecentRuns'],
+            npvs['RunI'][purity['RunI'] == 1],
             [
                 (30, 35),
                 (35, 40),
@@ -260,11 +253,11 @@ def main(args):
     pure_rate_vs_average_cicada_dir = base_output_dir/'PureRateVsAverageCICADA'
     pure_rate_vs_average_cicada_dir.mkdir(exist_ok=True, parents=True)
     pure_rate_vs_average_cicada_plots = {}
-    pure_inputs_average = np.mean(pure_inputs['RecentRuns'], axis=1)
+    pure_inputs_average = np.mean(inputs['RunI'][purity['RunI'] == 1], axis=1)
     for model in pure_rate_plots:
         chosen_kHz_threshold, _ = rp.get_threshold_for_rate(5.0, pure_rate_plots[model])
         rate_vs_average_cicada_plot = rp.make_rate_vs_variable_plot(
-            pure_score_predictions[model]['RecentRuns'],
+            score_predictions[model]['RunI'][purity['RunI'] == 1],
             chosen_kHz_threshold,
             pure_inputs_average,
             [

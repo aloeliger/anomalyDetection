@@ -5,6 +5,7 @@
 import numpy as np
 import ROOT
 from .utils import get_plot_dict_minimum, get_plot_dict_maximum, colors
+import os
 
 def get_all_inputs(the_df):
     inputs = the_df.AsNumpy(['modelInput', 'iEta', 'iPhi', 'pure_event', 'npv', 'cicada_input_average'])
@@ -61,9 +62,12 @@ def make_score_plot(cicada_inputs, model, tag=None, histogram_name=None):
 def draw_score_plot(
         plots,
         output_dir,
+        y_axis_range:tuple[int] = None,
+        x_axis_range:tuple[int] = None,
 ):
     ROOT.gStyle.SetOptStat(0)
     the_canvas = ROOT.TCanvas('score_plot')
+    the_canvas.SetLogy()
     
     theLegend = ROOT.TLegend(0.6,0.6,0.9,0.9)
     theLegend.SetFillStyle(0)
@@ -89,10 +93,19 @@ def draw_score_plot(
             scaled_plots[sample].GetYaxis().SetTitle('A.U.')
             scaled_plots[sample].SetTitle('CICADA Score')
 
-            scaled_plots[sample].GetYaxis().SetRangeUser(
-                get_plot_dict_minimum(scaled_plots),
-                get_plot_dict_maximum(scaled_plots) * 1.2,
-            )
+            if y_axis_range is not None:
+                pass
+            else:
+                scaled_plots[sample].GetYaxis().SetRangeUser(
+                    max(get_plot_dict_minimum(scaled_plots), 0.001),
+                    get_plot_dict_maximum(scaled_plots) * 1.2,
+                )
+
+            if x_axis_range is not None:
+                scaled_plots[sample].GetXaxis().SetRangeUser(
+                    x_axis_range[0],
+                    x_axis_range[1],
+                )
 
         theLegend.AddEntry(scaled_plots[sample], sample, 'lf')
     theLegend.Draw()

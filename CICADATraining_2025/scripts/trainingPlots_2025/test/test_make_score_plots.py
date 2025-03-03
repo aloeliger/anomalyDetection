@@ -3,6 +3,7 @@ import tensorflow.keras as keras
 import numpy as np
 import os
 import tempfile
+from pathlib import Path
 
 from .test_sample import sample_paths, trees, low_stat_data_sample, grouped_sample_fixture
 from .test_setup import unit_test_plot_dir

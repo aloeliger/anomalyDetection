@@ -39,6 +39,9 @@ class DFAndHistoHolder():
         self.ECALTPHisto = None
         self.ECALTPHistoName = f'ECALTP_{self.identifier}'
 
+        self.towerHisto = None
+        self.towerHistoName = f'caloTowers_{self.identifier}'
+
     def makeVariableBooking(self, variable, histoName):
         histoBooking = self.df.Histo1D(
             (
@@ -156,6 +159,10 @@ class DFAndHistoHolder():
                 'ecalTPet',
                 self.ECALTPHistoName,
             ),
+            self.towerHistoName: self.makeVariableBooking(
+                'L1CaloTower.iet',
+                self.towerHistoName
+            )
         }
         self.hcal_eta_bookings, self.ecal_eta_bookings = self.makeTPEtaSliceBookings()
         self.cicada_eta_bookings = self.makeCICADAEtaSlideBookings()
@@ -168,6 +175,7 @@ class DFAndHistoHolder():
         self.cicadaHisto = self.bookings[self.cicadaHistoName]
         self.HCALTPHisto = self.bookings[self.HCALTPHistoName]
         self.ECALTPHisto = self.bookings[self.ECALTPHistoName]
+        self.towerHisto = self.bookings[self.towerHistoName]
 
         # for i in range(len(self.hcal_eta_bookings)):
         #     self.hcal_eta_bookings[i] = self.hcal_eta_bookings[i].GetValues()
@@ -222,6 +230,11 @@ class DFAndHistoHolder():
             self.bookings[self.ECALTPHistoName],
             self.ECALTPHistoName,
             'ECAL TP ETs',
+        )
+        self.drawVariableHisto(
+            self.bookings[self.towerHistoName],
+            self.towerHistoName,
+            'Calo Tower ETs',
         )
 
         for histo in self.hcal_eta_bookings:

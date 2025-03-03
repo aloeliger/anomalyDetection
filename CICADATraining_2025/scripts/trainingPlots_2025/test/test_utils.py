@@ -124,3 +124,11 @@ def unprescaled_triggers():
     with open(json_location) as theFile:
         unprescaled_trigger_list = json.load(theFile)
     return unprescaled_trigger_list
+
+def test_get_threshold_from_rate_table(dummy_rate_table):
+    threshold, _ = get_threshold_from_rate_table(dummy_rate_table, 0.5)
+    assert(threshold == 40.0)
+
+    threshold_two, true_rate = get_threshold_from_rate_table(dummy_rate_table, 0.75)
+    assert(threshold_two == 20.0)
+    assert(true_rate == 1.0)

@@ -2,6 +2,7 @@ import h5py
 import argparse
 
 import numpy as np
+import tensorflow as tf
 
 from tensorflow import keras
 from rich.console import Console
@@ -9,6 +10,8 @@ from rich.console import Console
 from sklearn.model_selection import train_test_split
 
 from pathlib import Path
+
+#from examinePileupVersusCICADA import makeSuppressedCICADAInputs
 
 console = Console()
 
@@ -34,6 +37,15 @@ def randomEtaReflections(theDataset):
     newExamples = np.array(newExamples)
     return newExamples
 
+class L1Normalization(keras.layers.Layer):
+    def __init__(self, axis=-1, **kwargs):
+        super(L1Normalization, self).__init__(**kwargs)
+        self.axis_ = axis
+        
+    def call(self, inputs):
+        l1_norm = tf.reduce_sum(tf.abs(inputs), axis=self.axis_, keepdims=True)
+        return inputs / (l1_norm + tf.keras.backend.epsilon())
+
 def main(args):
     inputFileName = Path(args.workPath) / 'teacherTrainingFile.h5'
     with h5py.File(str(inputFileName)) as theFile:
@@ -55,8 +67,14 @@ def main(args):
     trainval_inputData, test_inputData, trainval_outputData,  test_outputData, trainval_npvs, test_npvs = train_test_split(inputDataset, outputDataset, npvs, test_size=0.4, random_state=42)
     inputData, valInput, outputData, valOutput, train_npvs, val_npvs = train_test_split(trainval_inputData, trainval_outputData, trainval_npvs, test_size=0.1/(0.6), random_state=42)
 
+    #inputData = makeSuppressedCICADAInputs(inputData)
+    #valInput = makeSuppressedCICADAInputs(valInput)
+    #test_inputData = makeSuppressedCICADAInputs(test_inputData)
+
     #layerNormer = keras.layers.LayerNormalization(axis=(1,2,3))
-    layerNormer = keras.layers.Softmax(axis=(1,2,3))
+    #layerNormer = L1Normalization(axis=(1,2,3))
+    #layerNormer = keras.layers.Softmax(axis=(1,2,3))
+    layerNormer = keras.layers.UnitNormalization(axis=(1,2,3))
     normed_outputData = layerNormer(outputData)
     normed_valOutput = layerNormer(valOutput)
     normed_testOutputData = layerNormer(test_outputData)
@@ -67,8 +85,11 @@ def main(args):
         #keras.layers.GaussianNoise(3.0),
         #keras.layers.GaussianDropout(1.0),
         keras.layers.Reshape((18,14,1), name='teacher_reshape'),
-        keras.layers.LayerNormalization(axis=[1,2,3], name='teacher_layer_norm'),
+        #keras.layers.LayerNormalization(axis=[1,2,3], name='teacher_layer_norm'),
+        #L1Normalization(axis=(1,2,3)),
+        #keras.layers.Softmax(axis=[1,2,3], name='teacher_layer_norm'),
         #keras.layers.Softmax(axis=[1,2,3]),
+        keras.layers.UnitNormalization(axis=[1,2,3]),
         keras.layers.Conv2D(
             filters=20,
             kernel_size=3,
@@ -140,8 +161,8 @@ def main(args):
         x=inputData,
         #y=outputData,
         y=normed_outputData,
-        validation_data=(valInput, valOutput),
-        #validation_data=(valInput, normed_valOutput),
+        #validation_data=(valInput, valOutput),
+        validation_data=(valInput, normed_valOutput),
         epochs=100,
         callbacks=[
             teacherBestModel,

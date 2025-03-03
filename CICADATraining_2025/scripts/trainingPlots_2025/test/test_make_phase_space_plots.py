@@ -43,14 +43,6 @@ def dummy_rate_table():
         100.0: 0.05,
     }
 
-def test_get_threshold_from_rate_table(dummy_rate_table):
-    threshold, _ = get_threshold_from_rate_table(dummy_rate_table, 0.5)
-    assert(threshold == 40.0)
-
-    threshold_two, true_rate = get_threshold_from_rate_table(dummy_rate_table, 0.75)
-    assert(threshold_two == 20.0)
-    assert(true_rate == 1.0)
-
 @pytest.fixture
 def low_stat_ps_sample():
     trees = [

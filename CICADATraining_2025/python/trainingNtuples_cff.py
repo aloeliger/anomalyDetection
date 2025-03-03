@@ -17,6 +17,13 @@ options.register(
     VarParsing.VarParsing.multiplicity.list,
     VarParsing.VarParsing.varType.string
 )
+options.register(
+    'includeNPVNtuplizer',
+    False,
+    VarParsing.VarParsing.multiplicity.singleton,
+    VarParsing.VarParsing.varType.bool,
+    'Include the dedicated NPV Ntuplizer or not'
+)
 options.parseArguments()
 
 process = cms.Process("NTUPLIZE",Run3_2024)
@@ -97,8 +104,13 @@ process.schedule = cms.Schedule(process.raw2digi_step, process.endjob_step)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
-from L1Trigger.Configuration.customiseReEmul import L1TReEmulFromRAW
-process = L1TReEmulFromRAW(process)
+if options.isData:
+    from L1Trigger.Configuration.customiseReEmul import L1TReEmulFromRAW
+    process = L1TReEmulFromRAW(process)
+else:
+    from L1Trigger.Configuration.customiseReEmul import L1TReEmulMCFromRAW
+    process = L1TReEmulMCFromRAW(process)
+
 
 from L1Trigger.L1TNtuples.customiseL1Ntuple import L1NtupleRAWEMU
 process = L1NtupleRAWEMU(process)
@@ -113,15 +125,25 @@ process.load('anomalyDetection.anomalyTriggerSkunkworks.ECALTrigPrimAnalyzer_cfi
 process.load('anomalyDetection.anomalyTriggerSkunkworks.HCALTrigPrimAnalyzer_cfi')
 process.load('anomalyDetection.DPNoteCode.npvNtuplizer_cfi')
 
-process.NtuplePath = cms.Path(
-    process.L1TTriggerBitsNtuplizer +
-    process.CICADAInputNtuplizer +
-    process.npvNtuplizer
-    #process.unpackedCICADAScoreNtuplizer +
-    #process.unprefirableInformationNtuplizer +
-    #process.ECALTrigPrimAnalyzer +
-    #process.HCALTrigPrimAnalyzer
-)
+if options.includeNPVNtuplizer:
+    process.NtuplePath = cms.Path(
+        process.L1TTriggerBitsNtuplizer +
+        process.CICADAInputNtuplizer +
+        process.npvNtuplizer
+        #process.unpackedCICADAScoreNtuplizer +
+        #process.unprefirableInformationNtuplizer +
+        #process.ECALTrigPrimAnalyzer +
+        #process.HCALTrigPrimAnalyzer
+    )
+else:
+    process.NtuplePath = cms.Path(
+        process.L1TTriggerBitsNtuplizer +
+        process.CICADAInputNtuplizer
+        #process.unpackedCICADAScoreNtuplizer +
+        #process.unprefirableInformationNtuplizer +
+        #process.ECALTrigPrimAnalyzer +
+        #process.HCALTrigPrimAnalyzer
+    )
 
 process.schedule.append(process.NtuplePath)
 
