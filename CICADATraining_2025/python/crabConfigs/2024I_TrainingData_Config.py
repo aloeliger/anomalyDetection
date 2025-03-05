@@ -3,7 +3,7 @@ import os
 
 config = config()
 
-config.General.requestName = 'CICADATraining2025_2024I_3Mar2025'
+config.General.requestName = 'CICADATraining2025_2024I_4Mar2025'
 config.General.workArea = './crab'
 config.General.transferOutputs = True
 
@@ -20,6 +20,6 @@ config.Data.splitting='FileBased'
 config.Data.unitsPerJob = 1
 config.Data.runRange='386478,386509,386554,386594,386604,386618,386640,386661,386668,386673,386679,386694,386704,386852,386864,386873,386885,386917,386924,386945,386951'
 config.Data.publication=False
-config.Data.outputDatasetTag = 'CICADATraining2025_2024I_3Mar2025'
+config.Data.outputDatasetTag = 'CICADATraining2025_2024I_4Mar2025'
 
 config.Site.storageSite = 'T2_US_Wisconsin'

@@ -11,6 +11,19 @@ options.register(
     VarParsing.VarParsing.varType.bool,
     "Use data configuration options or not",
 )
+options.register(
+    'secondaryFiles',
+    [],
+    VarParsing.VarParsing.multiplicity.list,
+    VarParsing.VarParsing.varType.string
+)
+options.register(
+    'useNPVNtuplizer',
+    False,
+    VarParsing.VarParsing.multiplicity.singleton,
+    VarParsing.VarParsing.varType.bool,
+    'Use NPV ntuplization. Requires MiniAOD.'
+)
 options.parseArguments()
 
 process = cms.Process("NTUPLIZE",Run3_2023)
@@ -43,6 +56,7 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring(
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(options.inputFiles),
+                            secondaryFileNames = cms.untracked.vstring(options.secondaryFiles),
 )
 
 process.options = cms.untracked.PSet(
@@ -81,7 +95,7 @@ if options.isData:
 else:
     print("Treating config as simulation.")
     #process.GlobalTag = GlobalTag(process.GlobalTag, '130X_mcRun3_2023_realistic_postBPix_v2', '')
-    process.GlobalTag = GlobalTag(process.GlobalTag, '133X_mcRun3_2024_realistic_v9', '')
+    process.GlobalTag = GlobalTag(process.GlobalTag, '142X_mcRun3_2025_realistic_v7', '')
 
 process.raw2digi_step = cms.Path(process.RawToDigi)
 process.endjob_step = cms.EndPath(process.endOfProcess)
@@ -167,39 +181,41 @@ process.load('anomalyDetection.paperCode.simpleSumNtuplizer_cfi')
 # Add trained keras models to the ntuples
 process.load("anomalyDetection.paperCode.kerasModels_cfi")
 process.kerasModelsSequence = cms.Sequence(
-    process.CICADA_v1p2p0_Ntuplizer +
-    process.CICADA_v2p2p0_Ntuplizer +
-    process.CICADA_vXp2p0_Teacher_Ntuplizer +
+    # process.CICADA_v1p2p0_Ntuplizer +
+    # process.CICADA_v2p2p0_Ntuplizer +
+    # process.CICADA_vXp2p0_Teacher_Ntuplizer +
 
-    process.CICADA_v1p2p0N_Ntuplizer +
-    process.CICADA_v2p2p0N_Ntuplizer +
-    process.CICADA_vXp2p0N_Teacher_Ntuplizer +
+    # process.CICADA_v1p2p0N_Ntuplizer +
+    # process.CICADA_v2p2p0N_Ntuplizer +
+    # process.CICADA_vXp2p0N_Teacher_Ntuplizer +
 
-    process.CICADA_v1p2p1_Ntuplizer +
-    process.CICADA_v2p2p1_Ntuplizer +
-    process.CICADA_vXp2p1_Teacher_Ntuplizer +
+    # process.CICADA_v1p2p1_Ntuplizer +
+    # process.CICADA_v2p2p1_Ntuplizer +
+    # process.CICADA_vXp2p1_Teacher_Ntuplizer +
 
-    process.CICADA_v1p2p1N_Ntuplizer +
-    process.CICADA_v2p2p1N_Ntuplizer +
-    process.CICADA_vXp2p1N_Teacher_Ntuplizer +
+    # process.CICADA_v1p2p1N_Ntuplizer +
+    # process.CICADA_v2p2p1N_Ntuplizer +
+    # process.CICADA_vXp2p1N_Teacher_Ntuplizer +
 
-    process.CICADA_v1p2p2_Ntuplizer +
-    process.CICADA_v2p2p2_Ntuplizer +
-    process.CICADA_vXp2p2_Teacher_Ntuplizer +
+    # process.CICADA_v1p2p2_Ntuplizer +
+    # process.CICADA_v2p2p2_Ntuplizer +
+    # process.CICADA_vXp2p2_Teacher_Ntuplizer +
     
-    process.CICADA_v1p2p2N_Ntuplizer +
-    process.CICADA_v2p2p2N_Ntuplizer +
-    process.CICADA_vXp2p2N_Teacher_Ntuplizer
+    # process.CICADA_v1p2p2N_Ntuplizer +
+    # process.CICADA_v2p2p2N_Ntuplizer +
+    # process.CICADA_vXp2p2N_Teacher_Ntuplizer
+    process.CICADA_v2p2p0_Ntuplizer
 )
 
-process.gadgetModelsSequence = cms.Sequence(
-    process.GADGET_v1p0p0_Ntuplizer +
-    process.GADGET_v1p0p0_Teacher_Ntuplizer
-)
+# process.gadgetModelsSequence = cms.Sequence(
+#     process.GADGET_v1p0p0_Ntuplizer +
+#     process.GADGET_v1p0p0_Teacher_Ntuplizer
+# )
 
 process.load('anomalyDetection.anomalyTriggerSkunkworks.unpackedScoreNtuplizer_cfi')
 process.load('anomalyDetection.anomalyTriggerSkunkworks.unprefirableInformationNtuplizer_cfi')
 process.load('anomalyDetection.paperCode.axol1tlScoreNtuplizer_cfi')
+process.load('anomalyDetection.DPNoteCode.npvNtuplizer_cfi')
 
 process.NtuplePath = cms.Path(
     # process.CICADAv1p1p0Ntuplizer +
@@ -210,7 +226,7 @@ process.NtuplePath = cms.Path(
     process.CICADAv2p1p2Ntuplizer +
     process.L1TTriggerBitsNtuplizer +
     process.CICADAInputNtuplizer +
-    #process.kerasModelsSequence +
+    process.kerasModelsSequence +
     #process.gadgetModelsSequence +
     process.simpleSumNtuplizer +
     #process.unpackedCICADAScoreNtuplizer +
@@ -218,6 +234,9 @@ process.NtuplePath = cms.Path(
     process.axol1tlScoreNtuplizerv3 +
     process.axol1tlScoreNtuplizerv4
 )
+
+if options.useNPVNtuplizer:
+    process.NtuplePath.insert(0, process.npvNtuplizer)
 
 process.schedule.append(process.NtuplePath)
 

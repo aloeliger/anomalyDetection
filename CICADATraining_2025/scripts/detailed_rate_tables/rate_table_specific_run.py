@@ -99,8 +99,8 @@ def main(args):
         #'/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024E_11Nov2024/',
         #'/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024G_11Nov2024/',
         #'/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024H_11Nov2024/',
-        #'/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_11Nov2024/',
-        '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_28Feb2025/',
+        '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_11Nov2024/',
+        #'/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_3Mar2025/',
     ]
 
     console.log('Making DF')
@@ -146,16 +146,26 @@ def main(args):
     # Run 386951: Lumi 100-700
     # Run 386945: Lumi 100-800
 
+#     lumi_level_df = df.Filter("""
+# (run == 386594 && lumi >= 1 && lumi <= 100) ||
+# (run == 386604 && lumi >= 100 && lumi <= 1250) ||
+# (run == 386618 && lumi >= 1 && lumi <= 200) ||
+# (run == 386661 && lumi >= 100 && lumi <= 450) ||
+# (run == 386668 && lumi >= 100 && lumi <= 350) ||
+# (run == 386945 && lumi >= 100 && lumi <= 800) ||
+# (run == 386951 && lumi >= 100 && lumi <= 700)
+# """
+#     )
+
     lumi_level_df = df.Filter("""
 (run == 386594 && lumi >= 1 && lumi <= 100) ||
 (run == 386604 && lumi >= 100 && lumi <= 1250) ||
 (run == 386618 && lumi >= 1 && lumi <= 200) ||
 (run == 386661 && lumi >= 100 && lumi <= 450) ||
-(run == 386668 && lumi >= 100 && lumi <= 350) ||
-(run == 386945 && lumi >= 100 && lumi <= 800) ||
-(run == 386951 && lumi >= 100 && lumi <= 700)
+(run == 386668 && lumi >= 100 && lumi <= 350) 
 """
     )
+
     # lumi_level_df = df.Filter("""
 # (run == 386673 && lumi >= 1 && lumi <= 950) ||
 # (run == 386679 && lumi >= 75 && lumi <= 375)

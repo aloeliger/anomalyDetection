@@ -51,7 +51,9 @@ process.MessageLogger.suppressWarning = cms.untracked.vstring(
     'l1AXOEmuTree',
     'emtfStage2Digis', 
     'l1uGTTestcrateTree', 
-    'simDtTriggerPrimitiveDigis'
+    'simDtTriggerPrimitiveDigis',
+    'rpcCPPFRawToDigi',
+    'simEmtfDigis',
 )
 
 process.source = cms.Source("PoolSource",
