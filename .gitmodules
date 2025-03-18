@@ -10,3 +10,6 @@
 [submodule "hls4mlEmulatorExtras"]
 	path = hls4mlEmulatorExtras
 	url = git@github.com:cms-hls4ml/hls4mlEmulatorExtras.git
+[submodule "MCProduction"]
+	path = MCProduction
+	url = git@github.com:aloeliger/MCProduction.git
