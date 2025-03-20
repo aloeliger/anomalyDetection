@@ -56,12 +56,14 @@ def construct_data_samples(limit_files=None):
         'RunE': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024E_11Nov2024'],
         'RunG': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024G_11Nov2024'],
         'RunH': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024H_11Nov2024'],
+        'RunH': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_11Nov2024'],
         'Data': [
             '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024C_11Nov2024',
             '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024D_11Nov2024',
             '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024E_11Nov2024',
             '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024G_11Nov2024',
-            '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024H_11Nov2024',  
+            '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024H_11Nov2024',
+            '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_11Nov2024',
         ],
     }
 
