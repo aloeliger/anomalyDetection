@@ -51,23 +51,36 @@ class Sample():
 
 def construct_data_samples(limit_files=None):
     data_paths = {
-        'RunC': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024C_11Nov2024'],
-        'RunD': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024D_11Nov2024'],
-        'RunE': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024E_11Nov2024'],
-        'RunG': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024G_11Nov2024'],
-        'RunH': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024H_11Nov2024'],
-        'RunH': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_11Nov2024'],
+        # 'RunC': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024C_11Nov2024'],
+        # 'RunD': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024D_11Nov2024'],
+        # 'RunE': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024E_11Nov2024'],
+        # 'RunG': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024G_11Nov2024'],
+        # 'RunH': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024H_11Nov2024'],
+        # 'RunH': ['/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_11Nov2024'],
+        # 'Data': [
+        #     '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024C_11Nov2024',
+        #     '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024D_11Nov2024',
+        #     '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024E_11Nov2024',
+        #     '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024G_11Nov2024',
+        #     '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024H_11Nov2024',
+        #     '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_11Nov2024',
+        # ],
+        'RunI': ['/hdfs/store/user/aloelige/ZeroBias/AnomalyDetectionPaper2025_ZeroBias_Run2024I_20Mar2025/'],
+        'RunI_SpecificRuns': ['/hdfs/store/user/aloelige/ZeroBias/AnomalyDetectionPaper2025_ZeroBias_Run2024I_SpecificRuns_20Mar2025'],
         'Data': [
-            '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024C_11Nov2024',
-            '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024D_11Nov2024',
-            '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024E_11Nov2024',
-            '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024G_11Nov2024',
-            '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024H_11Nov2024',
-            '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_11Nov2024',
-        ],
+            '/hdfs/store/user/aloelige/ZeroBias/AnomalyDetectionPaper2025_ZeroBias_Run2024I_20Mar2025/',
+        ]
     }
 
-    data_trees = ['l1EventTree/L1EventTree', 'CICADAInputNtuplizer/CICADAInputTree', 'l1UpgradeTree/L1UpgradeTree']
+    data_trees = [
+        'l1EventTree/L1EventTree',
+        'CICADAInputNtuplizer/CICADAInputTree',
+        'l1UpgradeTree/L1UpgradeTree',
+        'CICADAv2p1p2Ntuplizer/L1TCaloSummary',
+        'CICADAv2p2p0Ntuplizer/L1TCaloSummary',
+        'axol1tlScoreNtuplizerv3/AXOL1TLScoreTree',
+        'axol1tlScoreNtuplizerv4/AXOL1TLScoreTree',
+    ]
 
     sample_collection = {}
 

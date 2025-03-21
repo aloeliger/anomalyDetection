@@ -29,7 +29,7 @@ def test_construct_data_samples():
     assert(data_sample_collection is not None)
     assert(type(data_sample_collection) == type(dict()))
 
-    for sample in ['RunC', 'RunD', 'RunE', 'RunG', 'RunH', 'Data']:
+    for sample in ['Data']:
         assert(data_sample_collection[sample] is not None)
         assert(data_sample_collection[sample].nFiles != 0)
 
