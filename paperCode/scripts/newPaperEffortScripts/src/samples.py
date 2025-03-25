@@ -76,8 +76,9 @@ def construct_data_samples(limit_files=None):
         'l1EventTree/L1EventTree',
         'CICADAInputNtuplizer/CICADAInputTree',
         'l1UpgradeTree/L1UpgradeTree',
-        'CICADAv2p1p2Ntuplizer/L1TCaloSummary',
-        'CICADAv2p2p0Ntuplizer/L1TCaloSummary',
+        'L1TTriggerBitsNtuplizer/L1TTriggerBits',
+        'CICADAv2p1p2Ntuplizer/L1TCaloSummaryOutput',
+        'CICADAv2p2p0Ntuplizer/L1TCaloSummaryOutput',
         'axol1tlScoreNtuplizerv3/AXOL1TLScoreTree',
         'axol1tlScoreNtuplizerv4/AXOL1TLScoreTree',
     ]
