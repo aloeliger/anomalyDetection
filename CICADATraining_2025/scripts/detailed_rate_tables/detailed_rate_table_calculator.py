@@ -18,7 +18,8 @@ def convert_rate_to_eff(rate, n_bunches=2544):
 
 
 def get_inputs(the_df):
-    inputs = the_df.AsNumpy(['modelInput', 'iEta', 'iPhi', 'pure_event', 'npv'])
+    # inputs = the_df.AsNumpy(['modelInput', 'iEta', 'iPhi', 'pure_event', 'npv'])
+    inputs = the_df.AsNumpy(['modelInput', 'iEta', 'iPhi', 'pure_event'])
 
     modelInput = list(inputs['modelInput'])
     modelInput = [ list(x) for x in modelInput]
@@ -38,7 +39,7 @@ def get_inputs(the_df):
 
     reshapedModelInput = reshapedModelInput.reshape((-1, 252))
     
-    return reshapedModelInput, inputs['pure_event'], inputs['npv']
+    return reshapedModelInput, inputs['pure_event']#, inputs['npv']
 
 def make_pure_event_filter_string(list_of_triggers):
     filter_string = ''

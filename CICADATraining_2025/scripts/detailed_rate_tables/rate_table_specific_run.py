@@ -99,8 +99,8 @@ def main(args):
         #'/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024E_11Nov2024/',
         #'/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024G_11Nov2024/',
         #'/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024H_11Nov2024/',
-        '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_11Nov2024/',
-        #'/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_3Mar2025/',
+        #'/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_11Nov2024/',
+        '/hdfs/store/user/aloelige/ZeroBias/CICADATraining2025_2024I_24Mar2025/',
     ]
 
     console.log('Making DF')
@@ -108,9 +108,9 @@ def main(args):
         all_data,
         [
             'l1EventTree/L1EventTree',
-            'CICADAInputNtuplizer/CICADAInputTree',
+            'simCICADAInputNtuplizer/CICADAInputTree',
             'L1TTriggerBitsNtuplizer/L1TTriggerBits',
-            'npvNtuplizer/NPVTree',
+            #'npvNtuplizer/NPVTree',
         ],
     )
 
@@ -189,13 +189,14 @@ def main(args):
     console.log(f'nEvents in the window: {counts.GetValue()}')
     console.log(f'Total pure events: {pure_counts.GetValue()}')
 
-    inputs, pure, npvs = get_inputs(lumi_level_df)
+    #inputs, pure, npvs = get_inputs(lumi_level_df)
+    inputs, pure = get_inputs(lumi_level_df)
 
     pure_counts = np.sum(pure)
 
     console.log('Getting model and making predictions')
     cmssw_base = os.getenv('CMSSW_BASE')
-    model_path = f'{cmssw_base}/src/anomalyDetection/CICADATraining_2025/metadata/best-legacy-method/'
+    model_path = f'{cmssw_base}/src/anomalyDetection/CICADATraining_2025/data/best-legacy-method/'
     new_model = keras.models.load_model(model_path)
     
     model_predictions = new_model.predict(inputs).reshape((-1,))
@@ -206,10 +207,10 @@ def main(args):
     output_path.mkdir(exist_ok=True, parents=True)
 
     console.log('Making some validation plots')
-    make_npv_plot(
-        npvs,
-        output_path=output_path/'npv_plot.png'
-    )
+    # make_npv_plot(
+    #     npvs,
+    #     output_path=output_path/'npv_plot.png'
+    # )
     make_score_plot(
         model_predictions,
         output_path=output_path/'scores.png'

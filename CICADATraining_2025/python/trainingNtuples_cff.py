@@ -1,5 +1,4 @@
 import FWCore.ParameterSet.Config as cms
-
 from Configuration.Eras.Era_Run3_2024_cff import Run3_2024
 
 import FWCore.ParameterSet.VarParsing as VarParsing
@@ -24,9 +23,23 @@ options.register(
     VarParsing.VarParsing.varType.bool,
     'Include the dedicated NPV Ntuplizer or not'
 )
+options.register(
+    'useHCALOverride',
+    False,
+    VarParsing.VarParsing.multiplicity.singleton,
+    VarParsing.VarParsing.varType.bool,
+    'Use HCAL calibartion overrides'
+)
+options.register(
+    'useCaloParamsOverride',
+    False,
+    VarParsing.VarParsing.multiplicity.singleton,
+    VarParsing.VarParsing.varType.bool,
+    ''
+)
 options.parseArguments()
 
-process = cms.Process("NTUPLIZE",Run3_2024)
+process = cms.Process("NTUPLIZE", Run3_2024)
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
@@ -91,14 +104,6 @@ process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(False)
 )
 
-from Configuration.AlCa.GlobalTag import GlobalTag
-if options.isData:
-    print("Treating config as data.")
-    process.GlobalTag = GlobalTag(process.GlobalTag, '140X_dataRun3_Prompt_v4', '')
-else:
-    print("Treating config as simulation.")
-    process.GlobalTag = GlobalTag(process.GlobalTag, '140X_mcRun3_2023_realistic_postBPix_v2', '')
-
 process.raw2digi_step = cms.Path(process.RawToDigi)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 
@@ -131,6 +136,7 @@ if options.includeNPVNtuplizer:
     process.NtuplePath = cms.Path(
         process.L1TTriggerBitsNtuplizer +
         process.CICADAInputNtuplizer +
+        process.simCICADAInputNtuplizer +
         process.npvNtuplizer
         #process.unpackedCICADAScoreNtuplizer +
         #process.unprefirableInformationNtuplizer +
@@ -140,7 +146,8 @@ if options.includeNPVNtuplizer:
 else:
     process.NtuplePath = cms.Path(
         process.L1TTriggerBitsNtuplizer +
-        process.CICADAInputNtuplizer
+        process.CICADAInputNtuplizer +
+        process.simCICADAInputNtuplizer
         #process.unpackedCICADAScoreNtuplizer +
         #process.unprefirableInformationNtuplizer +
         #process.ECALTrigPrimAnalyzer +
@@ -150,6 +157,27 @@ else:
 process.schedule.append(process.NtuplePath)
 
 process.TFileService.fileName = cms.string(options.outputFile)
+
+from Configuration.AlCa.GlobalTag import GlobalTag
+if options.isData:
+    print("Treating config as data.")
+    if options.useHCALOverride:
+        print('Using HCAL override')
+        process.load("SimCalorimetry.HcalTrigPrimProducers.hcaltpdigi_cff")
+        process.HcalTPGCoderULUT.LUTGenerationMode = cms.bool(False)
+        override = "Tag,HcalL1TriggerObjectsRcd,sqlite_file:HcalL1TriggerObjects_Run3Mar2025_06.db"
+        process.GlobalTag = GlobalTag(process.GlobalTag, "140X_dataRun3_Prompt_v4", override)
+        # process.GlobalTag = GlobalTag(process.GlobalTag, '150X_dataRun3_HLT_forTriggerStudies_v2', '')
+    else:
+        process.GlobalTag = GlobalTag(process.GlobalTag, '140X_dataRun3_Prompt_v4', '')
+else:
+    print("Treating config as simulation.")
+    process.GlobalTag = GlobalTag(process.GlobalTag, '140X_mcRun3_2023_realistic_postBPix_v2', '')
+
+
+if options.useCaloParamsOverride:
+    print('Using Calo Params override')
+    process.load('anomalyDetection.CICADATraining_2025.caloParams_2025_v0_2a_cfi')
 
 print("schedule:")
 print(process.schedule)
