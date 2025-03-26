@@ -53,6 +53,10 @@ private:
 		     const edm::Handle<T>& particleHandle,
 		     const int maxParticles);
   
+  template<typename template_result_type, typename template_loss_type>
+  template_loss_type model_prediction();
+  
+  
   std::string modelName;
   edm::EDGetTokenT<BXVector<l1t::Muon>> muonToken;
   edm::EDGetTokenT<BXVector<l1t::Tau>> tauToken;
@@ -75,6 +79,13 @@ axol1tlProducer::axol1tlProducer(const edm::ParameterSet& iConfig):
 {
   model = loader.load_model();
   produces<float>("AXOScore");
+}
+
+template<typename template_result_type, typename template_loss_type>
+template_loss_type axol1tlProducer::model_prediction() {
+  std::pair<template_result_type, template_loss_type> ADModelResult;
+  model->read_result(&ADModelResult);
+  return ADModelResult.second;
 }
 
 void axol1tlProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -135,14 +146,24 @@ void axol1tlProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   fillParticles<BXVector<l1t::Muon>>(ADModelInput, ADInputIndex, muonHandle, nMuons);
   fillParticles<BXVector<l1t::Jet>>(ADModelInput, ADInputIndex, jetHandle, nJets);
 
+  //Okay, this gets a bit tricky, because we now need to change around the types
+  
   model->prepare_input(ADModelInput);
   model->predict();
-  model->read_result(&ADModelResult);
+  //model->read_result(&ADModelResult);
+  std::unique_ptr<float> score_output;
+  if(modelName == "GTADModel_v3" || modelName == "GTADModel_v4") {
+    using case_result_type = std::array<ap_fixed<10, 7, AP_RND_CONV, AP_SAT>, 8>;
+    score_output = std::make_unique<float>(model_prediction<case_result_type, losstype>().to_float());
+  } else {
+    using case_result_type = ap_fixed<18, 14, AP_RND_CONV, AP_SAT>;
+    score_output = std::make_unique<float>(model_prediction<case_result_type, losstype>().to_float());
+  }
 
   //This is how the axo emulator reads this
-  float score = ADModelResult.second.to_float() * 16.0;
+  //float score = ADModelResult.second.to_float() * 16.0;
 
-  std::unique_ptr<float> score_output = std::make_unique<float>(score);
+  //std::unique_ptr<float> score_output = std::make_unique<float>(score);
 
   iEvent.put(std::move(score_output), "AXOScore");
  }

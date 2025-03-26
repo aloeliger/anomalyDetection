@@ -127,6 +127,7 @@ process.productionTask = cms.Task(
     process.cicadav2p2p0Emulation,
     process.axol1tlProducerv3,
     process.axol1tlProducerv4,
+    process.axol1tlProducerv5,
 )
 process.productionPath = cms.Path(process.productionTask)
 process.schedule.append(process.productionPath)
@@ -161,7 +162,8 @@ process.NtuplePath = cms.Path(
     process.CICADAInputNtuplizer +
     process.simpleSumNtuplizer +
     process.axol1tlScoreNtuplizerv3 +
-    process.axol1tlScoreNtuplizerv4
+    process.axol1tlScoreNtuplizerv4 +
+    process.axol1tlScoreNtuplizerv5
 )
 
 if options.useNPVNtuplizer:
