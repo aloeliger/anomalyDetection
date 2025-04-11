@@ -13,7 +13,7 @@ config.General.transferOutputs = True
 
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = f'{cmssw_base}/src/anomalyDetection/paperCode/python/makeCICADANtuplesFromRAW.py'
-config.JobType.pyCfgParams=['isData=True', 'useNPVNtuplizer=True']
+config.JobType.pyCfgParams=['isData=True', 'useNPVNtuplizer=True', 'includeRecoObjects=True']
 config.JobType.inputFiles=[f'{cmssw_base}/src/anomalyDetection/CICADA']
 config.JobType.maxMemoryMB=4000
 

@@ -7,7 +7,7 @@ cmssw_base = os.getenv('CMSSW_BASE')
 
 config = config()
 
-config.General.requestName = f'AnomalyDetectionPaper2025_SingleNeutrino_Winter24_{today}'
+config.General.requestName = f'AnomalyDetectionPaper2025_SingleNeutrino_Winter24_CERN_{today}'
 
 config.General.workArea = './crab'
 config.General.transferOutputs = True
@@ -24,6 +24,7 @@ config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1
 config.Data.publication = False
-config.Data.outputDatasetTag = f'AnomalyDetectionPaper2025_SingleNeutrino_Winter24_{today}'
+config.Data.outputDatasetTag = f'AnomalyDetectionPaper2025_SingleNeutrino_Winter24_CERN_{today}'
+config.Data.outLFNDirBase = '/store/group/phys_exotica/axol1tl/CICADANtuples'
 
-config.Site.storageSite = 'T2_US_Wisconsin'
+config.Site.storageSite = 'T2_CH_CERN'

@@ -24,6 +24,12 @@ options.register(
     VarParsing.VarParsing.varType.bool,
     'Use NPV ntuplization. Requires MiniAOD.'
 )
+options.register(
+    'includeRecoObjects',
+    False,
+    VarParsing.VarParsing.multiplicity.singleton,
+    VarParsing.VarParsing.varType.bool,
+)
 options.parseArguments()
 
 process = cms.Process("NTUPLIZE",Run3_2023)
@@ -154,6 +160,8 @@ process.load('anomalyDetection.anomalyTriggerSkunkworks.unpackedScoreNtuplizer_c
 process.load('anomalyDetection.anomalyTriggerSkunkworks.unprefirableInformationNtuplizer_cfi')
 process.load('anomalyDetection.paperCode.axol1tlScoreNtuplizer_cfi')
 process.load('anomalyDetection.DPNoteCode.npvNtuplizer_cfi')
+process.load('anomalyDetection.miniCICADA.slimmedObjectCounter_cfi')
+process.load('anomalyDetection.miniCICADA.HTCalculator_cfi')
 
 process.NtuplePath = cms.Path(
     process.CICADAv2p1p2Ntuplizer +
@@ -168,6 +176,10 @@ process.NtuplePath = cms.Path(
 
 if options.useNPVNtuplizer:
     process.NtuplePath.insert(0, process.npvNtuplizer)
+
+if options.includeRecoObjects:
+    process.NtuplePath.insert(0, process.objectCountSequence)
+    process.NtuplePath.insert(0, process.HTCalculator)
 
 process.schedule.append(process.NtuplePath)
 
