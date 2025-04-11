@@ -75,12 +75,14 @@ def construct_data_samples(limit_files=None):
     data_trees = [
         'l1EventTree/L1EventTree',
         'CICADAInputNtuplizer/CICADAInputTree',
-        'l1UpgradeTree/L1UpgradeTree',
+        #'l1UpgradeTree/L1UpgradeTree',
+        'l1UpgradeEmuTree/L1UpgradeTree',
         'L1TTriggerBitsNtuplizer/L1TTriggerBits',
         'CICADAv2p1p2Ntuplizer/L1TCaloSummaryOutput',
         'CICADAv2p2p0Ntuplizer/L1TCaloSummaryOutput',
         'axol1tlScoreNtuplizerv3/AXOL1TLScoreTree',
         'axol1tlScoreNtuplizerv4/AXOL1TLScoreTree',
+        'simpleSumNtuplizer/simpleEtSums',
     ]
 
     sample_collection = {}
@@ -96,9 +98,22 @@ def construct_data_samples(limit_files=None):
 
 def construct_mc_samples(limit_files=None):
     mc_paths = {
-        'SingleNeutrino': ['/hdfs/store/user/aloelige/SingleNeutrino_E-10-gun/Paper_Ntuples_22Jan2025/']
+        'SingleNeutrino': ['/hdfs/store/user/aloelige/SingleNeutrino_E-10-gun/AnomalyDetectionPaper2025_SingleNeutrino_Winter24_28Mar2025/'],
+        
     }
-    mc_trees = ['l1EventTree/L1EventTree', 'CICADAInputNtuplizer/CICADAInputTree', 'l1UpgradeTree/L1UpgradeTree']
+    mc_trees = [
+        'l1EventTree/L1EventTree',
+        'CICADAInputNtuplizer/CICADAInputTree',
+        #'l1UpgradeTree/L1UpgradeTree',
+        'l1UpgradeEmuTree/L1UpgradeTree',
+        'L1TTriggerBitsNtuplizer/L1TTriggerBits',
+        'CICADAv2p1p2Ntuplizer/L1TCaloSummaryOutput',
+        'CICADAv2p2p0Ntuplizer/L1TCaloSummaryOutput',
+        'axol1tlScoreNtuplizerv3/AXOL1TLScoreTree',
+        'axol1tlScoreNtuplizerv4/AXOL1TLScoreTree',
+        'axol1tlScoreNtuplizerv5/AXOL1TLScoreTree',
+        'simpleSumNtuplizer/simpleEtSums',
+    ]
 
     sample_collection={}
     for sample in mc_paths:

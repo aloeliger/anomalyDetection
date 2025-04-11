@@ -7,6 +7,7 @@ from .definitions import add_all_values
 from .histogram_utilities import draw_cms_latex
 from pathlib import Path
 from rich.console import Console
+import cmsstyle
 
 console = Console()
 
@@ -62,56 +63,104 @@ def draw_axo_style_score_plot(
     total_score_plot = total_score_plot.GetValue()
     working_point_plot = working_point_plot.GetValue()
     pure_score_plot = pure_score_plot.GetValue()
+
+    cmsstyle.SetLumi(
+        2.42,
+    )
+    cmsstyle.SetEnergy(
+        13.6,
+    )
+
+    cmsstyle.AppendAdditionalInfo('2024I Zero Bias')
+    cmsstyle.AppendAdditionalInfo('Runs 386594,386604,386618,')
+    cmsstyle.AppendAdditionalInfo('386640,386661 & 386668')
     
-    the_canvas = ROOT.TCanvas(f'{score_name}_canvas',f'{score_name}_canvas',800,600)
+    the_canvas = cmsstyle.cmsCanvas(
+        f'{score_name}_canvas',
+        x_min = total_score_plot.GetXaxis().GetXmin(),
+        x_max = total_score_plot.GetXaxis().GetXmax(),
+        y_min = 1.0,
+        y_max = total_score_plot.GetMaximum()*1000,
+        nameXaxis = "Emulated CIADA Score",
+        nameYaxis = "Events",
+    )
+    #the_canvas = ROOT.TCanvas(f'{score_name}_canvas',f'{score_name}_canvas')
     the_canvas.SetLogy()
-    the_canvas.SetTicks()
-
-    total_score_plot.Draw('HIST MIN0')
-    total_score_plot.SetLineColor(
-        ROOT.TColor.GetColor('#3F90DAFF')
+    #the_canvas.SetTicks()
+    
+    #total_score_plot.Draw('HIST MIN0')
+    #total_score_plot.SetLineColor(
+    #    ROOT.TColor.GetColor('#3F90DAFF')
+    #)
+    #total_score_plot.SetLineWidth(2)
+    #max_val = total_score_plot.GetMaximum()
+    #total_score_plot.GetYaxis().SetRangeUser(1.0, max_val*3)
+    #total_score_plot.SetTitle('')
+    cmsstyle.cmsDraw(
+        h=total_score_plot,
+        style='HIST',
+        lcolor = ROOT.TColor.GetColor('#3F90DAFF'),
+        lwidth=3,
+        fstyle=0
     )
-    total_score_plot.SetLineWidth(2)
-    max_val = total_score_plot.GetMaximum()
-    total_score_plot.GetYaxis().SetRangeUser(1.0, max_val*3)
-    total_score_plot.SetTitle('')
 
-    working_point_plot.Draw('HIST SAME MIN0')
-    working_point_plot.SetLineColor(
-        ROOT.TColor.GetColor('#FFA90EFF')
+    #working_point_plot.Draw('HIST SAME MIN0')
+    #working_point_plot.SetLineColor(
+    #    ROOT.TColor.GetColor('#FFA90EFF')
+    #)
+    #working_point_plot.SetLineWidth(2)
+    cmsstyle.cmsDraw(
+        h=working_point_plot,
+        style='HIST SAME',
+        lcolor = ROOT.TColor.GetColor('#FFA90EFF'),
+        lwidth=3,
+        fstyle=0,
     )
-    working_point_plot.SetLineWidth(2)
 
-    pure_score_plot.Draw('HIST SAME MIN0')
-    pure_score_plot.SetLineColor(
-        ROOT.TColor.GetColor('#BD1F01FF')
+    #pure_score_plot.Draw('HIST SAME MIN0')
+    #pure_score_plot.SetLineColor(
+    #    ROOT.TColor.GetColor('#BD1F01FF')
+    #)
+    #pure_score_plot.SetLineWidth(2)
+    #pure_score_plot.SetLineStyle(2)
+    cmsstyle.cmsDraw(
+        h=pure_score_plot,
+        style='HIST SAME',
+        lcolor = ROOT.TColor.GetColor('#BD1F01FF'),
+        lstyle=2,
+        lwidth=3,
+        fstyle=0,
     )
-    pure_score_plot.SetLineWidth(2)
-    pure_score_plot.SetLineStyle(2)
 
-    the_legend = ROOT.TLegend(
-        0.55,
-        0.57,
+    the_legend = cmsstyle.cmsLeg(
+        0.6,
+        0.4,
         0.9,
-        0.77,
+        0.7,
     )
-    the_legend.SetFillStyle(0)
-    the_legend.SetLineWidth(0)
+    #the_legend.SetFillStyle(0)
+    #the_legend.SetLineWidth(0)
     the_legend.AddEntry(total_score_plot, 'All Zero Bias', 'l')
     the_legend.AddEntry(working_point_plot, 'CICADA Nominal', 'l')
     the_legend.AddEntry(pure_score_plot, 'CICADA Pure', 'l')
     the_legend.Draw()
-
-    draw_cms_latex()
     
-    run_latex = ROOT.TLatex()
-    run_latex.SetTextSize(0.0375)
-    run_latex.SetNDC(True)
-    run_latex.SetTextAlign(11)
-    #run_latex.DrawLatex(0.85, 0.85, '#font[42]{Runs 386594,386604,386618,386640,386661 & 386668}')
-    run_latex.DrawLatex(0.635, 0.83, '#font[42]{Runs 386594, 386604}')
-    run_latex.DrawLatex(0.635, 0.8, '#font[42]{386618, 386640}')
-    run_latex.DrawLatex(0.635, 0.77, '#font[42]{386661 & 386668}')
+    #draw_cms_latex()
+
+    #TODO Replace with Header
+    # run_latex = ROOT.TLatex()
+    # run_latex.SetTextSize(0.0375)
+    # run_latex.SetNDC(True)
+    # run_latex.SetTextAlign(11)
+    # #run_latex.DrawLatex(0.85, 0.85, '#font[42]{Runs 386594,386604,386618,386640,386661 & 386668}')
+    # run_latex.DrawLatex(0.635, 0.83, '#font[42]{Runs 386594, 386604}')
+    # run_latex.DrawLatex(0.635, 0.8, '#font[42]{386618, 386640}')
+    # run_latex.DrawLatex(0.635, 0.77, '#font[42]{386661 & 386668}')
+
+    # cmsstyle.cmsHeader(
+    #    leg = the_legend,
+    #    legTitle = "Runs 386594,386604,386618,386640,386661 & 386668",
+    # )
 
     # Run 386594: 335.306 pb^-1
     # Run 386604: 843.800 pb^-1
@@ -120,11 +169,11 @@ def draw_axo_style_score_plot(
     # Run 386661: 188.446 pb^-1
     # Run 386668: 149.928 pb^-1
     
-    lumi_latex = ROOT.TLatex()
-    lumi_latex.SetTextSize(0.05)
-    lumi_latex.SetNDC(True)
-    lumi_latex.SetTextAlign(32)
-    lumi_latex.DrawLatex(0.9, 0.93, '#font[42]{2.42 fb^{-1}}')
+    #lumi_latex = ROOT.TLatex()
+    #lumi_latex.SetTextSize(0.05)
+    #lumi_latex.SetNDC(True)
+    #lumi_latex.SetTextAlign(32)
+    #lumi_latex.DrawLatex(0.9, 0.93, '#font[42]{2.42 fb^{-1}}')
     
     the_canvas.SaveAs(
         f'{output_path}/score_{score_name}.png'
@@ -134,7 +183,8 @@ def draw_axo_style_score_plot(
     )
 
 def main(args):
-    ROOT.gStyle.SetOptStat(0)
+    #ROOT.gStyle.SetOptStat(0)
+    cmsstyle.setCMSStyle(force=ROOT.kTRUE)
 
     console.log('Getting samples')
     data_samples = construct_data_samples()

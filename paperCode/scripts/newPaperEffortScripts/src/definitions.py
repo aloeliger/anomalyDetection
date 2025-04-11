@@ -42,7 +42,24 @@ def add_cicada_input_sum(the_sample: Sample):
     """
 
     the_sample.df = the_sample.df.Define("cicadaInputSum", cicadaInputSumFunction)
+
+def add_eg_sum_variable(the_sample: Sample):
+    eg_pt_sum_function = """
+    float pt_sum = 0.0;
+    try {
+       for(int i = 0; i < nEGs; ++i) {
+          pt_sum += egEt.at(i);
+       }
+       return pt_sum;
+    }
+    catch (const std::runtime_error& e) {
+       return -999.f;
+    }
+    """
+
+    the_sample.df = the_sample.df.Define('eg_pt_sum', eg_pt_sum_function)
     
 def add_all_values(the_sample: Sample):
     add_cicada_input_sum(the_sample)
     add_pure_event_variable(the_sample)
+    add_eg_sum_variable(the_sample)

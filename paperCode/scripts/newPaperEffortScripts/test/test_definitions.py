@@ -30,3 +30,8 @@ def test_add_pure_event_variable(dataSample):
     add_pure_event_variable(dataSample)
     all_columns = dataSample.df.GetColumnNames()
     assert('pure_event' in all_columns)
+
+def test_add_eg_sum_variable(dataSample):
+    add_eg_sum_variable(dataSample)
+    all_columns = dataSample.df.GetColumnNames()
+    assert('eg_pt_sum' in all_columns)
