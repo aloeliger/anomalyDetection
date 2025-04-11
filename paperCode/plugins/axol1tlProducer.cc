@@ -162,6 +162,8 @@ void axol1tlProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   //This is how the axo emulator reads this
   //float score = ADModelResult.second.to_float() * 16.0;
+  (*score_output) *= 16.0; //AXO factor present in the emulator.
+
 
   //std::unique_ptr<float> score_output = std::make_unique<float>(score);
 
